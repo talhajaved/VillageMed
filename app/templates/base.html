@@ -9,14 +9,15 @@
   </head>
   <body>
   {% block navbar %}
-<div class="navbar navbar-inverse" role="navigation">
+<div class="navbar navbar-inverse" style='background-color:#FFFFFF' role="navigation">
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand" href="{{ url_for('index') }}">VillageMED</a>
+            <a class="navbar-brand" href="{{ url_for('index') }}"><img src="../static/VMedLogo.svg" width="200" height ="35"></img></a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="{{ url_for('index') }}">About</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('donate') }}">Donate</a></li>
                 {% if g.user.is_authenticated() %}
                 <li><a href="{{ url_for('user') }}">Profile</a></li>
                 <li><a href="{{ url_for('logout') }}">Logout</a></li>

@@ -5,6 +5,12 @@ from app import app, db, lm
 from .forms import EditProfileForm, SelectAppointmentForm, AppointmentCompletedForm
 from .models import Doctor, Appointment
 from oauth import OAuthSignIn
+import braintree
+
+braintree.Configuration.configure(braintree.Environment.Sandbox,
+                                merchant_id="v4pp4mjbfjxmyw3s",
+                                public_key="bkvv5qm86dyzmvjb",
+                                private_key="8b3d99cfccdd4a269cb1179bf9761abc")
 
 
 
@@ -139,3 +145,35 @@ def twilio():
     resp = twilio.twiml.Response()
     resp.message("Hello, Mobile Monkey")
     return str(resp)
+
+@app.route('/donate')
+def donate():
+    return render_template('donate.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route("/client_token", methods=["GET"])
+def client_token():
+  return braintree.ClientToken.generate()
+
+result = braintree.Transaction.sale({
+    "amount": "1000.00",
+    "credit_card": {
+        "number": "4111111111111111",
+        "expiration_date": "05/2012"
+    }
+})
+
+# if result.is_success:
+#     print("success!: " + result.transaction.id)
+# elif result.transaction:
+#     print("Error processing transaction:")
+#     print("  code: " + result.transaction.processor_response_code)
+#     print("  text: " + result.transaction.processor_response_text)
+# else:
+#     for error in result.errors.deep_errors:
+#         print("attribute: " + error.attribute)
+#         print("  code: " + error.code)
+#         print("  message: " + error.message)

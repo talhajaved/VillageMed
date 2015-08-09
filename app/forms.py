@@ -16,8 +16,8 @@ class EditProfileForm(Form):
 
 class SelectAppointmentForm(Form):
     #appointment_time = DateTimeField('Select Appointment Time', validators=[Required()])
-    appointment_time = DateField('DatePicker', format='%Y-%m-%d')
-    submit = SubmitField('Submit')
+    appointment_time = DateField('Appoinment Schedule', format='%Y-%m-%d')
+    submit = SubmitField('Schedule')
 
 class AppointmentCompletedForm(Form):
     submit = SubmitField('Completed')

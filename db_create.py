@@ -5,6 +5,10 @@ from app import db
 import os.path
 db.create_all()
 
-Patient.generate_fake();
-Appointment.generate_fake();
-PhoneCalls.generate_fake();
+# Patient.generate_fake();
+# Appointment.generate_fake();
+# PhoneCalls.generate_fake();
+
+Patient.add_patient();
+Appointment.add_appointment();
+PhoneCalls.add_call();

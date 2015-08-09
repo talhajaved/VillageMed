@@ -2,17 +2,22 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Hi, {{ user.username }}!</h1>
-
+<div class='container main con'>
+    <h1>Hi, {{ user.name }}!</h1><hr>
 
 <ul class="appointments">
+<h2>Pending Appointments</h2><br>
     {% for appointment in appointments %}
         <a href="{{ url_for('.appointment', id=appointment.id) }}"><div class="well appointment-content">
             <div class="appointment-patient">Patient: {{ appointment.patient.name }}</div>
+            <div class="appointment-patient">Age: {{ appointment.patient.age }}</div>
+            <div class="appointment-patient">Gender: {{ appointment.patient.gender }}</div>
+            <div class="appointment-patient">Availability: {{ appointment.availability_date + " - " + appointment.availability_time }}</div>
         </div></a>
 
     {% endfor %}
 </ul>
+</div>
 
 
 {% endblock %}

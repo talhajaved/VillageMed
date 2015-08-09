@@ -1,16 +1,17 @@
 {% extends "base.html" %}
 
+
 {% block title %}NYUAD Market - {{ user.username }}{% endblock %}
 
 {% block content %}
+<div class="container">
 <div class="page-header">
     <div class="profile-header">
-        <h1> {{ user.username }} </h1>
+        <h1> {{ user.name }} </h1>
         <p>
-            {{ user.name }}
-            {{ user.phone_number }}
-            {{ user.email }}
-            {{ user.speciality }}
+            Phone#: {{ user.phone_number }}<br>
+            Email: {{ user.email }}<br>
+            Speciality: {{ user.speciality }}<br>
         </p>
         <p>
             {% if user == current_user %}
@@ -19,12 +20,14 @@
         </p>
     </div>
 </div>
+</div>
 
 <ul class="scheduled_appointments">
 <h2>Scheduled Appointments</h2>
     {% for appointment in scheduled_appointments %}
         <a href="{{ url_for('.appointment', id=appointment.id) }}"><div class="well appointment-content">
             <div class="appointment-patient">Patient: {{ appointment.patient.name }}</div>
+            <div class="appointment-patient">Age: {{ appointment.patient.age }}</div>
             <div class="appointment-patient">Appointment Time: {{ appointment.appointment_time }}</div>
         </div></a>
     {% endfor %}
@@ -35,6 +38,7 @@
     {% for appointment in completed_appointments %}
         <a href="{{ url_for('.appointment', id=appointment.id) }}"><div class="well appointment-content">
             <div class="appointment-patient">Patient: {{ appointment.patient.name }}</div>
+            <div class="appointment-patient">Age: {{ appointment.patient.age }}</div>
             <div class="appointment-patient">Appointment Time: {{ appointment.appointment_time}}</div>
         </div></a>
     {% endfor %}

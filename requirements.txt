@@ -35,4 +35,3 @@ validators==0.8
 Werkzeug==0.9.4
 WTForms==1.0.5
 WTForms-Components==0.9.7
-psycopg2==2.4.4

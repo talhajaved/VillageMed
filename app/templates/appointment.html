@@ -4,21 +4,27 @@
 {% block title %}VillageMED - Appointment{% endblock %}
 
 {% block content %}
+<div class="container">
 <div class='row'>
 <div class="col-xs-6 appointment-content">
-    <div class="appointment-patient">Patient: {{ appointment.patient.name }}</div>
-    <div class="appointment-patient">Status: {{ appointment.status }}</div>
-</div>
+    <h4><div class="appointment-patient">Patient: {{ appointment.patient.name }}</div></h4>
+    <h4><div class="appointment-patient">Status: {{ appointment.status }}</div></h4>
+    <div class="appointment-patient">Age: {{ appointment.patient.age }}</div>
+    <div class="appointment-patient">Gender: {{ appointment.patient.gender }}</div>
+    <div class="appointment-patient">Phone#: {{ appointment.patient.phone_number }}</div>
+</div><br>
 
 <div class="col-xs-8">
 {% if form %}
 <div class="schedule-form">
+<hr>
     {{ wtf.quick_form(form) }}
 </div>
 {% endif %}
 </div>
-</div>
+</div><hr>
 
+<h3>  Phone Calls </h3>
 {% for call in appointment.phone_calls %}
 <li class="appointment">
     <div class="phone-call-content">
@@ -29,6 +35,7 @@
     <br>
 </li>
 {% endfor %}
+</div>
 
 
 {% endblock %}
