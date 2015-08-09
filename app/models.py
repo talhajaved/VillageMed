@@ -54,7 +54,7 @@ class Appointment(db.Model):
     phone_calls = db.relationship('PhoneCalls', backref='appointments', lazy='dynamic')
 
     @staticmethod
-    def generate_fake(count=10):
+    def generate_fake(count=5):
         from random import seed, randint
         import forgery_py
 
@@ -79,7 +79,7 @@ class PhoneCalls(db.Model):
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
 
     @staticmethod
-    def generate_fake(count=50):
+    def generate_fake(count=20):
         from random import seed, randint
         import forgery_py
 
