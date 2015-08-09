@@ -37,3 +37,4 @@ WTForms==1.0.5
 WTForms-Components==0.9.7
 gunicorn==18.0
 psycopg2==2.5.1
+braintree==3.18.0
