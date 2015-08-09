@@ -1,0 +1,44 @@
+{% extends "bootstrap/base.html" %}
+<html>
+  <head>
+    {% if title %}
+    <title>{{ title }} - project</title>
+    {% else %}
+    <title>project</title>
+    {% endif %}
+  </head>
+  <body>
+  {% block navbar %}
+<div class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="{{ url_for('index') }}">VillageMED</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="{{ url_for('index') }}">About</a></li>
+                {% if g.user.is_authenticated() %}
+                <li><a href="{{ url_for('user') }}">Profile</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block content %}
+    <hr>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+    {% for message in messages %}
+        <li>{{ message }} </li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    {% endblock %}
+  </body>
+</html>

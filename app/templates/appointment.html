@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}VillageMED - Appointment{% endblock %}
+
+{% block content %}
+<div class='row'>
+<div class="col-xs-6 appointment-content">
+    <div class="appointment-patient">Patient: {{ appointment.patient.name }}</div>
+    <div class="appointment-patient">Status: {{ appointment.status }}</div>
+</div>
+
+<div class="col-xs-8">
+{% if form %}
+<div class="schedule-form">
+    {{ wtf.quick_form(form) }}
+</div>
+{% endif %}
+</div>
+</div>
+
+{% for call in appointment.phone_calls %}
+<li class="appointment">
+    <div class="phone-call-content">
+        <div>Date {{ call.timestamp }}</div>
+        <div>Severity {{ call.case_severity }}</div>
+        <div>Symptoms {{ call.symptoms }}</div>
+    </div>
+    <br>
+</li>
+{% endfor %}
+
+
+{% endblock %}
