@@ -1,9 +1,12 @@
 import os
+import sys
+import logging
 from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager, UserMixin
 from config import basedir
+
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -15,4 +18,5 @@ lm.login_view = 'login'
 
 from app import views, models
 
-
+app.logger.addHandler(logging.StreamHandler(sys.stdout))
+app.logger.setLevel(logging.ERROR)
