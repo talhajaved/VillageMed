@@ -8,6 +8,7 @@ decorator==4.0.2
 Flask==0.10.1
 Flask-Bootstrap==3.0.3.1
 Flask-Login==0.2.7
+Flask-Migrate==1.6.0
 Flask-Moment==0.2.1
 Flask-OpenID==1.2.4
 Flask-PageDown==0.1.4
@@ -15,6 +16,7 @@ Flask-Script==0.6.6
 Flask-SQLAlchemy==1.0
 Flask-WTF==0.9.4
 ForgeryPy==0.1
+gunicorn==19.4.1
 html5lib==1.0b3
 httplib2==0.9.1
 infinity==1.3
