@@ -9,7 +9,7 @@
   </head>
   <body>
   {% block navbar %}
-<div class="navbar navbar-default" style='background-color:#cddce5' role="navigation">
+<div class="navbar navbar-default" style='background-color:#cddce5; border-bottom: 3px solid grey;' role="navigation">
     <div class="container">
         <div class="navbar-header">
             <a class="navbar-brand" href="{{ url_for('index') }}"><img src="../static/VMedLogo.png" height ="35"></img></a>
@@ -46,6 +46,8 @@
     </ul>
     {% endif %}
     {% endwith %}
-    {% endblock %}
+{% endblock %}
   </body>
 </html>
+
+<style>border-right: 
