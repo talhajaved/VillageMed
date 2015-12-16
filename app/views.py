@@ -294,7 +294,7 @@ def new_appointment(patient_id):
     response = plivoxml.Response()
     if request.method == 'GET':
         getdigits_action_url = url_for('new_appointment', _external=True, patient_id=patient_id,
-                                    **{'date': None,'time': None})
+                                    **{'date': None,'time': None, 'severity': None})
 
         getDigits = plivoxml.GetDigits(action=getdigits_action_url,
                                        method='POST', timeout=25, numDigits=6,
@@ -307,15 +307,44 @@ def new_appointment(patient_id):
 
     elif request.method == 'POST':
         if not request.args.get('date', None):
-            digit = request.form.get('Digits')
-            print digit
-
+            date = request.form.get('Digits')
             response = plivoxml.Response()
             absolute_action_url = url_for('new_appointment', _external=True, patient_id=patient_id,
-                                    **{'date': digit,'time': None})
+                                    **{'date': date,'time': None, 'severity': None})
             getDigits = plivoxml.GetDigits(action=absolute_action_url, method='POST',
                                         timeout=10, numDigits=1, retries=1)
             getDigits.addSpeak(body="Enter your ideal time of day. Press 1 \
                 for morning, 2 for afternoon, and 3 for evening.")
             response.add(getDigits)
             return Response(str(response), mimetype='text/xml')
+        elif not request.args.get('time', None):
+            time = request.form.get('Digits')
+            date = request.args.get('date', '0')
+            print date, time
+            response = plivoxml.Response()
+            absolute_action_url = url_for('new_appointment', _external=True, patient_id=patient_id,
+                                    **{'date': date,'time': time, 'severity': None})
+            getDigits = plivoxml.GetDigits(action=absolute_action_url, method='POST',
+                                        timeout=10, numDigits=1, retries=1)
+            getDigits.addSpeak(body="Please enter the urgency of your \
+                medical needs on an icreasing scale of one to five.")
+            response.add(getDigits)
+            return Response(str(response), mimetype='text/xml')
+        elif not request.args.get('severity', None):
+            severity = request.form.get('Digits')
+            date = request.args.get('date', '0')
+            time = request.args.get('time', '0')
+            print date, time, severity
+            response = plivoxml.Response()
+            absolute_action_url = url_for('new_appointment', _external=True, patient_id=patient_id,
+                                    **{'date': date,'time': time, 'severity': severity})
+            getDigits = plivoxml.GetDigits(action=absolute_action_url, method='POST',
+                                        timeout=10, numDigits=1, retries=1)
+            getDigits.addSpeak(body="You have reached far")
+            response.add(getDigits)
+            return Response(str(response), mimetype='text/xml')
+        else:
+            response = plivoxml.Response()
+            response.addSpeak(PLIVO_JOKE)
+            return Response(str(response), mimetype='text/xml')
+    
