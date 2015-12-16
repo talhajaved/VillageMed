@@ -15,8 +15,8 @@ OAUTH_CREDENTIALS = {
         'secret': 'cb846832e14382f2b48788d8f3f98f4e'
     },
     'twitter': {
-        'id': '4RZoVu6QFBsJGlU242bxMkqjb',
-        'secret': 'rwLWS4QbK5ccpThaRwctiNZKL1VFqocTgqhGCeWd1VwPek4A4m'
+        'id': '4QeliSQmG2eDodyYWQ4wk44UL',
+        'secret': '48YAwFbJHFjiXwlEP2mJMTohf6DiDL6cwSxI5BIWzrsqBKtvf4'
     }
 }
 
