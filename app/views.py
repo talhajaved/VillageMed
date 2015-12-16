@@ -184,10 +184,9 @@ result = braintree.Transaction.sale({
 PLIVO_SONG = "https://s3.amazonaws.com/plivocloud/music.mp3"
 
 # This is the message that Plivo reads when the caller dials in
-IVR_MESSAGE = "Welcome to Village Med, If you are experiencing an \
+IVR_MESSAGE = "Welcome to Village Med. If you are experiencing an \
                 immediate medical emergency, please hang up and dial \
-                your local emergency response.. Press 1 if you are an \
-                existing patient. Press 2 if you are a new patient."
+                your local emergency response."
 
 # This is the message that Plivo reads when the caller does nothing at all
 NO_INPUT_MESSAGE = "Sorry, I didn't catch that. Please hangup and try again \
@@ -207,10 +206,14 @@ def ivr():
         # GetDigit XML Docs - http://plivo.com/docs/xml/getdigits/
         getdigits_action_url = url_for('ivr', _external=True)
         getDigits = plivoxml.GetDigits(action=getdigits_action_url,
-                                       method='POST', timeout=7, numDigits=1,
+                                       method='POST', timeout=10, numDigits=1,
                                        retries=1)
 
         getDigits.addSpeak(IVR_MESSAGE)
+        getDigits.addWait(length=1)
+        getDigits.addSpeak(body='Press 1 if you are an existing patient')
+        getDigits.addWait(length=1)
+        getDigits.addSpeak(body='Press 2 if you are a new patient')
         response.add(getDigits)
         response.addSpeak(NO_INPUT_MESSAGE)
 
