@@ -3,7 +3,7 @@ from flask.ext.login import login_user, logout_user, current_user, \
     login_required
 from app import app, db, lm
 from .forms import EditProfileForm, SelectAppointmentForm, AppointmentCompletedForm
-from .models import Doctor, Appointment
+from .models import Doctor, Appointment, Patient
 from oauth import OAuthSignIn
 import braintree
 import plivoxml
