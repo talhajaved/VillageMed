@@ -9,18 +9,24 @@
   </head>
   <body>
   {% block navbar %}
-<div class="navbar navbar-inverse" style='background-color:#FFFFFF' role="navigation">
+<div class="navbar navbar-default" style='background-color:#cddce5' role="navigation">
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand" href="{{ url_for('index') }}"><img src="../static/VMedLogo.svg" width="200" height ="35"></img></a>
+            <a class="navbar-brand" href="{{ url_for('index') }}"><img src="../static/VMedLogo.png" height ="35"></img></a>
         </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
+        <div class="navbar-collapse collapse" style="font-size:1.7em; padding-top: 8px; font-weight: bold; font-family: 'Open Sans', sans-serif;">
+            <ul class="nav navbar-nav navbar-left">
                 <li><a href="{{ url_for('about') }}">About</a></li>
                 <li><a href="{{ url_for('donate') }}">Donate</a></li>
                 {% if g.user.is_authenticated() %}
                 <li><a href="{{ url_for('user') }}">Profile</a></li>
-                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% endif %}
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if g.user.is_authenticated() %}
+                <li style="float:right;"><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% else %}
+                <li style="float:right;"><a href="{{ url_for('login') }}">Login</a></li>
                 {% endif %}
             </ul>
         </div>
