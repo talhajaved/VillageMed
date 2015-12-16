@@ -223,9 +223,10 @@ def ivr():
         digit = request.form.get('Digits')
 
         if digit == "1":
-            # Fetch a random joke using the Reddit API.
-            absolute_action_url = url_for('existing_patient', _external=True)
-            response.addRedirect(body=absolute_action_url, method='GET')
+            # absolute_action_url = url_for('existing_patient', _external=True)
+            # response.addRedirect(body=absolute_action_url, method='GET')
+            absolute_action_url = url_for('new_appointment', _external=True, patient_id=1)
+            response.addRedirect(body=absolute_action_url, method='GET'
         elif digit == "2":
             # Listen to a song
             response.addPlay(PLIVO_SONG)
