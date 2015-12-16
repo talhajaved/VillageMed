@@ -320,13 +320,12 @@ def new_appointment(patient_id):
         elif not request.args.get('time', None):
             time = request.form.get('Digits')
             date = request.args.get('date', '0')
-            print date, time
             response = plivoxml.Response()
             absolute_action_url = url_for('new_appointment', _external=True, patient_id=patient_id,
                                     **{'date': date,'time': time, 'severity': None})
             getDigits = plivoxml.GetDigits(action=absolute_action_url, method='POST',
                                         timeout=10, numDigits=1, retries=1)
-            getDigits.addSpeak(body="Please enter the urgency of your \
+            getDigits.addSpeak(body="Enter the urgency of your \
                 medical needs on an icreasing scale of one to five.")
             response.add(getDigits)
             return Response(str(response), mimetype='text/xml')
@@ -334,17 +333,27 @@ def new_appointment(patient_id):
             severity = request.form.get('Digits')
             date = request.args.get('date', '0')
             time = request.args.get('time', '0')
-            print date, time, severity
             response = plivoxml.Response()
             absolute_action_url = url_for('new_appointment', _external=True, patient_id=patient_id,
                                     **{'date': date,'time': time, 'severity': severity})
             getDigits = plivoxml.GetDigits(action=absolute_action_url, method='POST',
-                                        timeout=10, numDigits=1, retries=1)
-            getDigits.addSpeak(body="You have reached far")
+                                        timeout=120, numDigits=10, retries=1)
+            getDigits.addSpeak(body="Press the digits corresponding to your symptoms") 
+            getDigits.addSpeak(body="1 for cough") 
+            getDigits.addSpeak(body="2 for nausea") 
+            getDigits.addSpeak(body="3 for vomiting") 
+            getDigits.addSpeak(body="4 for fatigue") 
+            getDigits.addSpeak(body="5 for sore throat") 
+            getDigits.addSpeak(body="6 for weight loss") 
+            getDigits.addSpeak(body="7 for abdominal pain")
+            getDigits.addSpeak(body="8 for heart burn")  
+            getDigits.addSpeak(body="9 for anxiety") 
+            getDigits.addSpeak(body="0 for depressive symptoms") 
+            getDigits.addSpeak(body="Press the hash key when you have selected all the relevant symptoms")
             response.add(getDigits)
             return Response(str(response), mimetype='text/xml')
         else:
             response = plivoxml.Response()
             response.addSpeak(PLIVO_JOKE)
             return Response(str(response), mimetype='text/xml')
-    
+     
