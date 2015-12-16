@@ -265,24 +265,21 @@ def existing_patient():
 @app.route('/response/patient/<int:id>', methods=['GET', 'POST'])
 def response_patient(id):
     response = plivoxml.Response()
-    if request.method == 'GET':
-        # # GetDigit XML Docs - http://plivo.com/docs/xml/getdigits/
-        # getdigits_action_url = url_for('response_patient', _external=True, id=id)
-        # getDigits = plivoxml.GetDigits(action=getdigits_action_url,
-        #                                method='POST', timeout=10, numDigits=4,
-        #                                retries=1)
+        getdigits_action_url = url_for('response_patient', _external=True, id=id)
+        getDigits = plivoxml.GetDigits(action=getdigits_action_url,
+                                       method='POST', timeout=10, numDigits=4,
+                                       retries=1)
 
-        # getDigits.addSpeak(body='Success . Appointment')
-        # # response.add(getDigits)
-        response.addSpeak(body='Success . Appointment')
-
+        getDigits.addSpeak(body='To access a current appointment, enter appointment id followed by the hash key')
+        getDigits.addWait(length=1)
+        getDigits.addSpeak(body='To set up a new appointment, press 0 followed by the hash key')
+        response.add(getDigits)
         return Response(str(response), mimetype='text/xml')
 
-    # elif request.method == 'POST':
-    #     digit = request.form.get('Digits')
-
-    #     patient = Patient.query.get_or_404(int(digit))
-    #     patient_response = "Welcome " + patient.name
-    #     response.addSpeak(patient_response)
-
-    #     return Response(str(response), mimetype='text/xml')
+    elif request.method == 'POST':
+        digit = request.form.get('Digits')
+        if digit == "0":
+            response.addPlay(PLIVO_SONG)
+        else: 
+            response.addSpeak(PLIVO_JOKE)
+        return Response(str(response), mimetype='text/xml')
