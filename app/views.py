@@ -280,7 +280,8 @@ def response_patient(id):
 
     elif request.method == 'POST':
         digit = request.form.get('Digits')
-        if digit == "0":
+        print digit
+        if digit == "0000":
             absolute_action_url = url_for('new_appointment', _external=True, patient_id=id)
             response.addRedirect(body=absolute_action_url, method='GET')
             getDigits.addSpeak(body='You will now be guided through the process of setting up an appointment')
