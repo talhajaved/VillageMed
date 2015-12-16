@@ -284,7 +284,6 @@ def response_patient(id):
             response.addSpeak(body='You will now be guided through the process of setting up an appointment')
             absolute_action_url = url_for('new_appointment', _external=True, patient_id=id)
             response.addRedirect(body=absolute_action_url, method='GET')
-            
         else: 
             response.addSpeak(PLIVO_JOKE)
         return Response(str(response), mimetype='text/xml')
@@ -297,21 +296,25 @@ def new_appointment(patient_id):
                                     **{'date': None,'time': None})
 
         getDigits = plivoxml.GetDigits(action=getdigits_action_url,
-                                       method='POST', timeout=15, numDigits=6,
+                                       method='POST', timeout=25, numDigits=6,
                                        retries=1)
 
         getDigits.addSpeak(body='Please enter the date of your availability in 6 digits.')
-        getDigits.addWait(length=1)
         getDigits.addSpeak(body='For example, December first of twenty fifteen would be 1 2 0 1 1 5.')
         response.add(getDigits)
         return Response(str(response), mimetype='text/xml')
 
     elif request.method == 'POST':
-        digit = request.form.get('Digits')
-        response.addSpeak(PLIVO_JOKE)
+        if not request.args.get('date', None):
+            digit = request.form.get('Digits')
+            print digit
 
-        # if digit == "0":
-        #     response.addPlay(PLIVO_SONG)
-        # else: 
-        #     response.addSpeak(PLIVO_JOKE)
-        return Response(str(response), mimetype='text/xml')
+            response = plivo.Response()
+            absolute_action_url = url_for('new_appointment', _external=True, patient_id=patient_id,
+                                    **{'date': digit,'time': None})
+            getDigits = plivo.GetDigits(action=absolute_action_url, method='POST',
+                                        timeout=10, numDigits=1, retries=1)
+            getDigits.addSpeak(body="Enter your ideal time of day. Press 1 \
+                for morning, 2 for afternoon, and 3 for evening.")
+            response.add(getDigits)
+            return Response(str(response), mimetype='text/xml')
