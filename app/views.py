@@ -209,8 +209,8 @@ def ivr():
                                        method='POST', timeout=10, numDigits=1,
                                        retries=1)
 
-        getDigits.addSpeak(IVR_MESSAGE)
-        getDigits.addWait(length=1)
+        # getDigits.addSpeak(IVR_MESSAGE)
+        # getDigits.addWait(length=1)
         getDigits.addSpeak(body='Press 1 if you are an existing patient')
         getDigits.addWait(length=1)
         getDigits.addSpeak(body='Press 2 if you are a new patient')
@@ -225,7 +225,7 @@ def ivr():
         if digit == "1":
             # Fetch a random joke using the Reddit API.
             absolute_action_url = url_for('existing_patient', _external=True)
-            response.addRedirect(body=absolute_action_url, method='POST')
+            response.addRedirect(body=absolute_action_url, method='GET')
         elif digit == "2":
             # Listen to a song
             response.addPlay(PLIVO_SONG)
