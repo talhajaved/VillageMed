@@ -271,7 +271,8 @@ def response_patient(id):
                                        method='POST', timeout=10, numDigits=4,
                                        retries=1)
 
-        getDigits.addSpeak(body='To access a current appointment, enter appointment id followed by the hash key')
+        getDigits.addSpeak(body='To access a current appointment, \
+            enter the appointment ID followed by the hash key')
         getDigits.addWait(length=1)
         getDigits.addSpeak(body='To set up a new appointment, press 0 followed by the hash key')
         response.add(getDigits)
@@ -280,7 +281,36 @@ def response_patient(id):
     elif request.method == 'POST':
         digit = request.form.get('Digits')
         if digit == "0":
-            response.addPlay(PLIVO_SONG)
+            absolute_action_url = url_for('new_appointment', _external=True, patient_id=id)
+            response.addRedirect(body=absolute_action_url, method='GET')
+            getDigits.addSpeak(body='You will now be guided through the process of setting up an appointment')
         else: 
             response.addSpeak(PLIVO_JOKE)
+        return Response(str(response), mimetype='text/xml')
+
+@app.route('/response/new_appointment/<int:patient_id>', methods=['GET', 'POST'])
+def new_appointment(patient_id):
+    response = plivoxml.Response()
+    if request.method == 'GET':
+        getdigits_action_url = url_for('new_appointment', _external=True, patient_id=patient_id,
+                                    **{'date': None,'time': None})
+
+        getDigits = plivoxml.GetDigits(action=getdigits_action_url,
+                                       method='POST', timeout=10, numDigits=6,
+                                       retries=1)
+
+        getDigits.addSpeak(body='Please enter the date of your availability in 6 digits.')
+        getDigits.addWait(length=1)
+        getDigits.addSpeak(body='For example, December first of twenty fifteen would be 1 2 0 1 1 5.')
+        response.add(getDigits)
+        return Response(str(response), mimetype='text/xml')
+
+    elif request.method == 'POST':
+        digit = request.form.get('Digits')
+        response.addSpeak(PLIVO_JOKE)
+
+        # if digit == "0":
+        #     response.addPlay(PLIVO_SONG)
+        # else: 
+        #     response.addSpeak(PLIVO_JOKE)
         return Response(str(response), mimetype='text/xml')
