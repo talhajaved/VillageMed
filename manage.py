@@ -13,6 +13,7 @@ def make_shell_context():
                 Permission=Permission, Post=Post, Comment=Comment)
 manager.add_command("shell", Shell(make_context=make_shell_context))
 
+
 if __name__ == '__main__':
     manager.run()
 

@@ -184,8 +184,10 @@ result = braintree.Transaction.sale({
 PLIVO_SONG = "https://s3.amazonaws.com/plivocloud/music.mp3"
 
 # This is the message that Plivo reads when the caller dials in
-IVR_MESSAGE = "Welcome to the Plivo IVR Demo App. Press 1 to hear a random \
-                joke. Press 2 to listen to a song."
+IVR_MESSAGE = "Welcome to Village Med, If you are experiencing an \
+                immediate medical emergency, please hang up and dial \
+                your local emergency response.. Press 1 if you are an \
+                existing patient. Press 2 if you are a new patient."
 
 # This is the message that Plivo reads when the caller does nothing at all
 NO_INPUT_MESSAGE = "Sorry, I didn't catch that. Please hangup and try again \
