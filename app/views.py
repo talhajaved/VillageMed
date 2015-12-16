@@ -281,9 +281,10 @@ def response_patient(id):
     elif request.method == 'POST':
         digit = request.form.get('Digits')
         if digit == "0":
+            response.addSpeak(body='You will now be guided through the process of setting up an appointment')
             absolute_action_url = url_for('new_appointment', _external=True, patient_id=id)
             response.addRedirect(body=absolute_action_url, method='GET')
-            response.addSpeak(body='You will now be guided through the process of setting up an appointment')
+            
         else: 
             response.addSpeak(PLIVO_JOKE)
         return Response(str(response), mimetype='text/xml')
@@ -296,7 +297,7 @@ def new_appointment(patient_id):
                                     **{'date': None,'time': None})
 
         getDigits = plivoxml.GetDigits(action=getdigits_action_url,
-                                       method='POST', timeout=10, numDigits=6,
+                                       method='POST', timeout=15, numDigits=6,
                                        retries=1)
 
         getDigits.addSpeak(body='Please enter the date of your availability in 6 digits.')
