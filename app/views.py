@@ -224,12 +224,37 @@ def ivr():
 
         if digit == "1":
             # Fetch a random joke using the Reddit API.
-            joke = joke_from_reddit()
-            response.addSpeak(joke)
+            absolute_action_url = url_for('existing_patient', _external=True)
+            response.addRedirect(body=absolute_action_url, method='POST')
         elif digit == "2":
             # Listen to a song
             response.addPlay(PLIVO_SONG)
         else:
             response.addSpeak(WRONG_INPUT_MESSAGE)
+
+        return Response(str(response), mimetype='text/xml')
+
+@app.route('/response/existing_patient/', methods=['GET', 'POST'])
+def existing_patient():
+    response = plivoxml.Response()
+    if request.method == 'GET':
+        # GetDigit XML Docs - http://plivo.com/docs/xml/getdigits/
+        getdigits_action_url = url_for('existing_patient', _external=True)
+        getDigits = plivoxml.GetDigits(action=getdigits_action_url,
+                                       method='POST', timeout=10, numDigits=4,
+                                       retries=1)
+
+        getDigits.addSpeak(body='Enter your patient ID, followed by the hash key')
+        response.add(getDigits)
+        response.addSpeak(NO_INPUT_MESSAGE)
+
+        return Response(str(response), mimetype='text/xml')
+
+    elif request.method == 'POST':
+        digit = request.form.get('Digits')
+
+        patient = Patient.query.get_or_404(int(digit))
+        patient_response = "Welcome " + patient.name
+        response.addSpeak(patient_response)
 
         return Response(str(response), mimetype='text/xml')
