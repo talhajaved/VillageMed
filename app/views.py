@@ -266,15 +266,15 @@ def existing_patient():
 def response_patient(id):
     response = plivoxml.Response()
     if request.method == 'GET':
-        # GetDigit XML Docs - http://plivo.com/docs/xml/getdigits/
-        getdigits_action_url = url_for('response_patient', _external=True, id=id)
-        getDigits = plivoxml.GetDigits(action=getdigits_action_url,
-                                       method='POST', timeout=10, numDigits=4,
-                                       retries=1)
+        # # GetDigit XML Docs - http://plivo.com/docs/xml/getdigits/
+        # getdigits_action_url = url_for('response_patient', _external=True, id=id)
+        # getDigits = plivoxml.GetDigits(action=getdigits_action_url,
+        #                                method='POST', timeout=10, numDigits=4,
+        #                                retries=1)
 
-        getDigits.addSpeak(body='Success . Appointment')
-        # response.add(getDigits)
-        # response.addSpeak(NO_INPUT_MESSAGE)
+        # getDigits.addSpeak(body='Success . Appointment')
+        # # response.add(getDigits)
+        response.addSpeak(body='Success . Appointment')
 
         return Response(str(response), mimetype='text/xml')
 
