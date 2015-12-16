@@ -267,7 +267,7 @@ def response_patient(id):
     response = plivoxml.Response()
     if request.method == 'GET':
         # GetDigit XML Docs - http://plivo.com/docs/xml/getdigits/
-        getdigits_action_url = url_for('response_patient', _external=True, id=patient.id)
+        getdigits_action_url = url_for('response_patient', _external=True, id=id)
         getDigits = plivoxml.GetDigits(action=getdigits_action_url,
                                        method='POST', timeout=10, numDigits=4,
                                        retries=1)
