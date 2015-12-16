@@ -265,6 +265,7 @@ def existing_patient():
 @app.route('/response/patient/<int:id>', methods=['GET', 'POST'])
 def response_patient(id):
     response = plivoxml.Response()
+    if request.method == 'GET':
         getdigits_action_url = url_for('response_patient', _external=True, id=id)
         getDigits = plivoxml.GetDigits(action=getdigits_action_url,
                                        method='POST', timeout=10, numDigits=4,
