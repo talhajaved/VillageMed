@@ -309,10 +309,10 @@ def new_appointment(patient_id):
             digit = request.form.get('Digits')
             print digit
 
-            response = plivo.Response()
+            response = plivoxml.Response()
             absolute_action_url = url_for('new_appointment', _external=True, patient_id=patient_id,
                                     **{'date': digit,'time': None})
-            getDigits = plivo.GetDigits(action=absolute_action_url, method='POST',
+            getDigits = plivoxml.GetDigits(action=absolute_action_url, method='POST',
                                         timeout=10, numDigits=1, retries=1)
             getDigits.addSpeak(body="Enter your ideal time of day. Press 1 \
                 for morning, 2 for afternoon, and 3 for evening.")
