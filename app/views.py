@@ -463,7 +463,6 @@ def new_patient():
 
             return Response(str(response), mimetype='text/xml')
 
-
 @app.route('/response/patient/<int:id>', methods=['GET', 'POST'])
 def patient_menu(id):
     response = plivoxml.Response()
