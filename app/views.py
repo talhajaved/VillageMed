@@ -429,6 +429,8 @@ def new_patient():
             gender= request.args.get('last_name', '0')
             phone_number = "+" + digit
 
+            print "Hereeee error"
+
             response = plivoxml.Response()
             absolute_action_url = url_for('new_patient', _external=True,
                                         **{'first_name': first_name,'last_name': last_name, 
