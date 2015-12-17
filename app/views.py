@@ -382,7 +382,7 @@ def new_patient():
             p = plivo.RestAPI(auth_id, auth_token)
 
             # Get all live calls
-            response = p.get_live_calls()
+            response = p.get_live_call()
             print str(response)
             print str(response[1]['calls'][0])
 
