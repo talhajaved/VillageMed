@@ -6,7 +6,7 @@ from .forms import EditProfileForm, SelectAppointmentForm, AppointmentCompletedF
 from .models import Doctor, Appointment, Patient, PhoneCalls
 from oauth import OAuthSignIn
 import braintree
-import plivoxml
+import plivoxml, calendar
 
 braintree.Configuration.configure(braintree.Environment.Sandbox,
                                 merchant_id="v4pp4mjbfjxmyw3s",
@@ -394,8 +394,11 @@ def new_appointment(patient_id):
             db.session.add(p)
             db.session.commit()
 
-            response.addSpeak("Your request for an appointment has been stored in our database with the appointment id " + a.id)
-            response.addSpeak("We will try to schedule an appointment for you on " + "August 11" + " in the " + a.availability_time)
+            response.addSpeak("Your request for an appointment has been stored in our\
+             database with the appointment id " + str(a.id))
+            response.addSpeak("We will try to schedule an appointment for you on " 
+                + calendar.month_name[availability_date[5:7]] + " " + 
+                availability_date[8:10] + " in the " + a.availability_time)
             response.addSpeak("You will be contacted soon with further details once a doctor has been found for you")
             response.addSpeak("We hope to get you feeling better soon.  Good bye.")
 
