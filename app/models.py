@@ -48,7 +48,15 @@ class Patient(db.Model):
         u=Patient(name="Amal Luiz",
             age="47",
             gender="Male",
-            phone_number="6463928001"
+            phone_number="+16468009090"
+            )
+        db.session.add(u)
+        db.session.commit()
+
+        u=Patient(name="Chauffina Carr",
+            age="31",
+            gender="Female",
+            phone_number="+923004005000"
             )
         db.session.add(u)
         db.session.commit()
@@ -84,8 +92,16 @@ class Appointment(db.Model):
     @staticmethod
     def add_appointment(): 
         a=Appointment(patient_id=1,
-            availability_time="3 to 5 pm",
-            availability_date="2015-08-11",
+            availability_time="Morning",
+            availability_date="2016-01-11",
+            status="Pending",
+            )
+        db.session.add(a)
+        db.session.commit()
+
+        a=Appointment(patient_id=2,
+            availability_time="Afternoon",
+            availability_date="2015-12-28",
             status="Pending",
             )
         db.session.add(a)
@@ -121,8 +137,16 @@ class PhoneCalls(db.Model):
     def add_call(): 
         c=PhoneCalls(patient_id=1,
             appointment_id=1,
-            symptoms="Headaches and dry throat",
+            symptoms="Headache, Fever",
             case_severity="3",
+            )
+        db.session.add(c)
+        db.session.commit()
+
+        c=PhoneCalls(patient_id=2,
+            appointment_id=2,
+            symptoms="Cough, Nausea, Fatigue",
+            case_severity="1",
             )
         db.session.add(c)
         db.session.commit()

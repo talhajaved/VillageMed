@@ -569,12 +569,12 @@ def new_appointment(patient_id):
             "2":"Nausea", 
             "3":"Vomiting", 
             "4":"Fatigue",
-            "5":"Sore throat",
-            "6":"Weight loss", 
-            "7":"Abdominal pain",
-            "8":"Heart burn",
-            "9":"Anxiety",
-            "0":"Depressive symptoms"
+            "5":"Headache",
+            "6":"Fever", 
+            "7":"Numbness",
+            "8":"Weight loss",
+            "9":"Abdominal pain",
+            "0":"Heart burn"
             }
             for i in symptoms_string:
                 symptoms += symptoms_dict[i] + ", "
