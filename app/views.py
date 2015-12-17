@@ -205,7 +205,7 @@ LETTER_DICT = {
             "11":"backspace",
             "21":"a", "22":"b", "23":"c",
             "31":"d", "32":"e", "33":"f",
-            "41":"g", "22":"h", "23":"i",
+            "41":"g", "42":"h", "43":"i",
             "51":"j", "52":"k", "53":"l",
             "61":"m", "62":"n", "63":"o",
             "71":"p", "72":"q", "73":"r", "74":"s", 
@@ -224,8 +224,8 @@ def ivr():
                                        method='POST', timeout=10, numDigits=1,
                                        retries=1)
 
-        # getDigits.addSpeak(IVR_MESSAGE)
-        # getDigits.addWait(length=1)
+        getDigits.addSpeak(IVR_MESSAGE)
+        getDigits.addWait(length=1)
         getDigits.addSpeak(body='Press 1 to access an existing patient profile.')
         getDigits.addSpeak(body='Press 2 to set up a new profile.')
         response.add(getDigits)
@@ -423,7 +423,7 @@ def new_patient():
             first_name = request.args.get('first_name', '0')
             last_name = request.args.get('last_name', '0')
             age = request.args.get('age', '0')
-            gender= request.args.get('last_name', '0')
+            gender= request.args.get('gender', '0')
             phone_number = "+" + digit
 
             response = plivoxml.Response()
@@ -441,7 +441,6 @@ def new_patient():
             age = request.args.get('age', '0')
             gender = request.args.get('gender', '0')
             phone_number = request.args.get('phone_number', '0')
-            print first_name, last_name, age, gender, phone_number
 
             u=Patient(name=first_name + " " + last_name,
                 age=age,
