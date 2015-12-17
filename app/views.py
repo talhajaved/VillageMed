@@ -378,7 +378,7 @@ def new_patient():
             first_name = request.args.get('first_name', '0')
             last_name = request.args.get('last_name', '0')
             age = request.args.get('age', '0')
-            gender= request.args.get('last_name', '0')
+            gender= request.args.get('gender', '0')
 
             if digit == "1":
                 auth_id = current_app.config['PLIVO_AUTH']['id']
@@ -458,7 +458,7 @@ def new_patient():
              created a new profile. Your patient I D, " + str(u.id))
             response.addSpeak(body='Now, you will now be guided through the \
                 process of scheduling an appointment')
-            absolute_action_url = url_for('new_appointment', _external=True, patient_id=id)
+            absolute_action_url = url_for('new_appointment', _external=True, patient_id=u.id)
             response.addRedirect(body=absolute_action_url, method='GET')
 
             return Response(str(response), mimetype='text/xml')
