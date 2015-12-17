@@ -308,7 +308,7 @@ def new_appointment(patient_id):
     elif request.method == 'POST':
         if not request.args.get('date', None):
             digit = request.form.get('Digits')
-            date = '20' + digit[4:6] + '-' + digit[0:2] + '-' digit[2:4]
+            date = '20' + digit[4:6] + '-' + digit[0:2] + '-' + digit[2:4]
             response = plivoxml.Response()
             absolute_action_url = url_for('new_appointment', _external=True, patient_id=patient_id,
                                     **{'date': date,'time': None, 'severity': None})
