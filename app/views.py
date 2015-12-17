@@ -376,7 +376,7 @@ def new_appointment(patient_id):
             "0":"depressive symptoms"
             }
             for i in symptoms_string:
-                symptoms += symptoms_dict[i] ", "
+                symptoms += symptoms_dict[i] + ", "
 
             a=Appointment(patient_id=patient_id,
                 availability_time= request.args.get('time', '0'),
