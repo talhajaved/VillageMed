@@ -368,7 +368,6 @@ def new_patient():
             getDigits = plivoxml.GetDigits(action=absolute_action_url, method='POST',
                                         timeout=10, numDigits=1, retries=1)
             getDigits.addSpeak(body="To use this number as your contact number, press 1.")
-            getDigits.addWait(length=1)
             getDigits.addSpeak(body="or Press 2 to enter a different number")
             response.add(getDigits)
             return Response(str(response), mimetype='text/xml')
@@ -420,6 +419,8 @@ def new_patient():
 
         elif not request.args.get('phone_number', None):
             digit = request.form.get('Digits')
+            print "Here"
+            print digit
             first_name = request.args.get('first_name', '0')
             last_name = request.args.get('last_name', '0')
             age = request.args.get('age', '0')
