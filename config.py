@@ -20,3 +20,7 @@ OAUTH_CREDENTIALS = {
     }
 }
 
+PLIVO_AUTH = {
+    'id': 'MAMTE3OGQ5ZTK4MTI3ZT',
+    'token': 'NTRhOTljZjFjYjkwZTVlYzA3YjBmMDg2NWI3YjE2'
+}

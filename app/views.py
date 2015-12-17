@@ -5,8 +5,8 @@ from app import app, db, lm
 from .forms import EditProfileForm, SelectAppointmentForm, AppointmentCompletedForm
 from .models import Doctor, Appointment, Patient, PhoneCalls
 from oauth import OAuthSignIn
-import braintree
-import plivoxml, calendar
+import braintree, calendar
+import plivo, plivoxml
 
 braintree.Configuration.configure(braintree.Environment.Sandbox,
                                 merchant_id="v4pp4mjbfjxmyw3s",
@@ -226,7 +226,7 @@ def ivr():
         # getDigits.addSpeak(IVR_MESSAGE)
         # getDigits.addWait(length=1)
         getDigits.addSpeak(body='Press 1 to access an existing patient profile.')
-        getDigits.addSpeak(body='Press 2 to set up a new patient profile.')
+        getDigits.addSpeak(body='Press 2 to set up a new profile.')
         response.add(getDigits)
         response.addSpeak(NO_INPUT_MESSAGE)
 
@@ -283,14 +283,14 @@ def new_patient():
                                     'age': None, 'gender': None})
         getDigits = plivoxml.GetDigits(action=getdigits_action_url, retries=1,
                                            method='POST', timeout=180, numDigits=30)
-        getDigits.addSpeak(body='Please enter your first name by \
-            spelling out the letters using the following convention:')
-        getDigits.addSpeak(body="Press the number the letter is \
-            displayed on , and the place the letter is at on the key.")
-        getDigits.addSpeak(body='For example, to enter A, press 2 1')
-        getDigits.addSpeak(body='To enter the letter K, press 5 2')
-        getDigits.addSpeak(body='For space, press 1 1')
-        getDigits.addSpeak(body='To delete the last enetered letter, press 0 0')
+        # getDigits.addSpeak(body='Please enter your first name by \
+        #     spelling out the letters using the following convention:')
+        # getDigits.addSpeak(body="Press the number the letter is \
+        #     displayed on , and the place the letter is at on the key.")
+        # getDigits.addSpeak(body='For example, to enter A, press 2 1')
+        # getDigits.addSpeak(body='To enter the letter K, press 5 2')
+        # getDigits.addSpeak(body='For space, press 1 1')
+        # getDigits.addSpeak(body='To delete the last enetered letter, press 0 0')
         getDigits.addSpeak(body='Press the hash key when you are done')
         response.add(getDigits)
         return Response(str(response), mimetype='text/xml')
@@ -307,8 +307,8 @@ def new_patient():
                     first_name += letter
             response = plivoxml.Response()
             absolute_action_url = url_for('new_patient', _external=True,
-                                        **{'first_name': first_name,'last_name': None, 
-                                        'age': None, 'gender': None})
+                                        **{'first_name': first_name.title(),
+                                        'last_name': None, 'age': None, 'gender': None})
             getDigits = plivoxml.GetDigits(action=absolute_action_url, retries=1,
                                            method='POST', timeout=180, numDigits=30)
             getDigits.addSpeak(body='Now enter your last name using the same convention as before.')
@@ -329,7 +329,7 @@ def new_patient():
             response = plivoxml.Response()
             absolute_action_url = url_for('new_patient', _external=True,
                                         **{'first_name': first_name,'age': None,
-                                        'last_name': last_name, 'gender': None})
+                                        'last_name': last_name.title(), 'gender': None})
             getDigits = plivoxml.GetDigits(action=absolute_action_url, method='POST',
                                         timeout=10, numDigits=2, retries=1)
             getDigits.addSpeak(body="Enter your age using the key pad.")
@@ -364,8 +364,8 @@ def new_patient():
                                         'age': age, 'gender': gender_dict[digit]})
             getDigits = plivoxml.GetDigits(action=absolute_action_url, method='POST',
                                         timeout=10, numDigits=1, retries=1)
-            getDigits.addSpeak(body="Press the number corresponding to your gender.\
-             1 for female, 2 for male, 3 for other.")
+            getDigits.addSpeak(body="Press 1 to save this number as your contact number")
+            getDigits.addSpeak(body="Press 2 to enter a different contact number")
             response.add(getDigits)
             return Response(str(response), mimetype='text/xml')
 
@@ -373,22 +373,14 @@ def new_patient():
             response = plivoxml.Response()
             response.addSpeak(PLIVO_JOKE)
 
-            # symptoms_string = request.form.get('Digits')
-            # symptoms = ''
-            # symptoms_dict = {
-            # "1":"Cough",
-            # "2":"Nausea", 
-            # "3":"Vomiting", 
-            # "4":"Fatigue",
-            # "5":"Sore throat",
-            # "6":"Weight loss", 
-            # "7":"Abdominal pain",
-            # "8":"Heart burn",
-            # "9":"Anxiety",
-            # "0":"Depressive symptoms"
-            # }
-            # for i in symptoms_string:
-            #     symptoms += symptoms_dict[i] + ", "
+            auth_id = current_app.config['PLIVO_AUTH']['id']
+            auth_token = current_app.config['PLIVO_AUTH']['token']
+
+            p = plivo.RestAPI(auth_id, auth_token)
+
+            # Get all live calls
+            response = p.get_live_calls()
+            print str(response)
 
             # a=Appointment(patient_id=patient_id,
             #     availability_time= request.args.get('time', '0'),
@@ -398,13 +390,7 @@ def new_patient():
             # db.session.add(a)
             # db.session.commit()
 
-            # p=PhoneCalls(patient_id=patient_id,
-            #     appointment_id=a.id,
-            #     symptoms=symptoms[:-2],
-            #     case_severity=request.args.get('severity', '0'),
-            #     )
-            # db.session.add(p)
-            # db.session.commit()
+
 
             # response.addSpeak("Your request for an appointment has been stored in our\
             #  database with the appointment I D, " + str(a.id))
