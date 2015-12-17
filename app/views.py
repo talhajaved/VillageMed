@@ -235,12 +235,12 @@ def ivr():
 
         return Response(str(response), mimetype='text/xml')
 
-@app.route('/response/existing_patient/', methods=['GET', 'POST'])
-def existing_patient():
+@app.route('/response/patient_menu/', methods=['GET', 'POST'])
+def patient_menu():
     response = plivoxml.Response()
     if request.method == 'GET':
         # GetDigit XML Docs - http://plivo.com/docs/xml/getdigits/
-        getdigits_action_url = url_for('existing_patient', _external=True)
+        getdigits_action_url = url_for('patient_menu', _external=True)
         getDigits = plivoxml.GetDigits(action=getdigits_action_url,
                                        method='POST', timeout=10, numDigits=4,
                                        retries=1)
@@ -257,43 +257,16 @@ def existing_patient():
         patient = Patient.query.get_or_404(int(digit))
         patient_response = "Welcome " + patient.name
         response.addSpeak(patient_response)
-        absolute_action_url = url_for('response_patient', _external=True, id=patient.id)
+        absolute_action_url = url_for('existing_patient', _external=True, id=patient.id)
         response.addRedirect(body=absolute_action_url, method='GET')
 
-        return Response(str(response), mimetype='text/xml')
-
-
-@app.route('/response/patient/<int:id>', methods=['GET', 'POST'])
-def response_patient(id):
-    response = plivoxml.Response()
-    if request.method == 'GET':
-        getdigits_action_url = url_for('response_patient', _external=True, id=id)
-        getDigits = plivoxml.GetDigits(action=getdigits_action_url,
-                                       method='POST', timeout=10, numDigits=4,
-                                       retries=1)
-
-        getDigits.addSpeak(body='To access a current appointment, \
-            enter the appointment ID followed by the hash key')
-        getDigits.addWait(length=1)
-        getDigits.addSpeak(body='To set up a new appointment, press 0 followed by the hash key')
-        response.add(getDigits)
-        return Response(str(response), mimetype='text/xml')
-
-    elif request.method == 'POST':
-        digit = request.form.get('Digits')
-        if digit == "0":
-            response.addSpeak(body='You will now be guided through the process of scheduling an appointment')
-            absolute_action_url = url_for('new_appointment', _external=True, patient_id=id)
-            response.addRedirect(body=absolute_action_url, method='GET')
-        else: 
-            response.addSpeak(PLIVO_JOKE)
         return Response(str(response), mimetype='text/xml')
 
 @app.route('/response/new_patient/', methods=['GET', 'POST'])
 def new_patient():
     response = plivoxml.Response()
     if request.method == 'GET':
-        getdigits_action_url = url_for('new_appointment', _external=True,
+        getdigits_action_url = url_for('new_patient', _external=True,
                                     **{'first_name': None,'last_name': None, 
                                     'age': None, 'gender': None})
         getDigits = plivoxml.GetDigits(action=getdigits_action_url, retries=1,
@@ -312,7 +285,7 @@ def new_patient():
         if not request.args.get('first_name', None):
             digit = request.form.get('Digits').title()
             response = plivoxml.Response()
-            absolute_action_url = url_for('new_appointment', _external=True,
+            absolute_action_url = url_for('new_patient', _external=True,
                                         **{'first_name': digit,'last_name': None, 
                                         'age': None, 'gender': None})
             getDigits = plivoxml.GetDigits(action=getdigits_action_url, retries=1,
@@ -326,7 +299,7 @@ def new_patient():
             digit = request.form.get('Digits').title()
             first_name = request.args.get('first_name', '0')
             response = plivoxml.Response()
-            absolute_action_url = url_for('new_appointment', _external=True,
+            absolute_action_url = url_for('new_patient', _external=True,
                                         **{'first_name': first_name,'last_name': digit, 
                                         'age': None, 'gender': None})
             getDigits = plivoxml.GetDigits(action=absolute_action_url, method='POST',
@@ -340,7 +313,7 @@ def new_patient():
             first_name = request.args.get('first_name', '0')
             last_name = request.args.get('last_name', '0')
             response = plivoxml.Response()
-            absolute_action_url = url_for('new_appointment', _external=True,
+            absolute_action_url = url_for('new_patient', _external=True,
                                         **{'first_name': first_name,'last_name': last_name, 
                                         'age': digit, 'gender': None})
             getDigits = plivoxml.GetDigits(action=absolute_action_url, method='POST',
@@ -358,7 +331,7 @@ def new_patient():
             gender_dict = {"1":"Female","2":"Male", "3":"Other"}
             print first_name, last_name, age, gender_dict[digit]
             response = plivoxml.Response()
-            absolute_action_url = url_for('new_appointment', _external=True,
+            absolute_action_url = url_for('new_patient', _external=True,
                                         **{'first_name': first_name,'last_name': last_name, 
                                         'age': age, 'gender': gender_dict[digit]})
             getDigits = plivoxml.GetDigits(action=absolute_action_url, method='POST',
@@ -416,6 +389,32 @@ def new_patient():
             # response.addWait(length=2)
 
             return Response(str(response), mimetype='text/xml')
+
+@app.route('/response/patient/<int:id>', methods=['GET', 'POST'])
+def existing_patient(id):
+    response = plivoxml.Response()
+    if request.method == 'GET':
+        getdigits_action_url = url_for('existing_patient', _external=True, id=id)
+        getDigits = plivoxml.GetDigits(action=getdigits_action_url,
+                                       method='POST', timeout=10, numDigits=4,
+                                       retries=1)
+
+        getDigits.addSpeak(body='To access a current appointment, \
+            enter the appointment ID followed by the hash key')
+        getDigits.addWait(length=1)
+        getDigits.addSpeak(body='To set up a new appointment, press 0 followed by the hash key')
+        response.add(getDigits)
+        return Response(str(response), mimetype='text/xml')
+
+    elif request.method == 'POST':
+        digit = request.form.get('Digits')
+        if digit == "0":
+            response.addSpeak(body='You will now be guided through the process of scheduling an appointment')
+            absolute_action_url = url_for('new_appointment', _external=True, patient_id=id)
+            response.addRedirect(body=absolute_action_url, method='GET')
+        else: 
+            response.addSpeak(PLIVO_JOKE)
+        return Response(str(response), mimetype='text/xml')
 
 @app.route('/response/new_appointment/<int:patient_id>', methods=['GET', 'POST'])
 def new_appointment(patient_id):
