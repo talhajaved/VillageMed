@@ -360,11 +360,11 @@ def new_patient():
             last_name = request.args.get('last_name', '0')
             age = request.args.get('age', '0')
             gender_dict = {"1":"Female","2":"Male", "3":"Other"}
-            print first_name, last_name, age, gender_dict[digit]
             response = plivoxml.Response()
             absolute_action_url = url_for('new_patient', _external=True,
                                         **{'first_name': first_name,'last_name': last_name, 
-                                        'age': age, 'gender': gender_dict[digit]})
+                                        'age': age, 'completed': None,
+                                        'gender': gender_dict[digit]})
             getDigits = plivoxml.GetDigits(action=absolute_action_url, method='POST',
                                         timeout=10, numDigits=1, retries=1)
             getDigits.addSpeak(body="To use this number as your contact number, press 1.")
@@ -372,48 +372,79 @@ def new_patient():
             response.add(getDigits)
             return Response(str(response), mimetype='text/xml')
 
-        else:
+        elif not request.args.get('completed', None):
+            digit = request.form.get('Digits')
+            first_name = request.args.get('first_name', '0')
+            last_name = request.args.get('last_name', '0')
+            age = request.args.get('age', '0')
+            gender= request.args.get('last_name', '0')
+
+            if digit == "1":
+                auth_id = current_app.config['PLIVO_AUTH']['id']
+                auth_token = current_app.config['PLIVO_AUTH']['token']
+
+                p = plivo.RestAPI(auth_id, auth_token)
+
+                # Get all live calls
+                api_response = p.get_live_calls()
+
+                params = {
+                    'call_uuid': str(api_response[1]['calls'][0]) # The ID of the call
+                }
+
+                api_response = p.get_live_call(params)
+                phone_number = str(api_response[1]['caller_name'])
+
+                response = plivoxml.Response()
+                absolute_action_url = url_for('new_patient', _external=True,
+                                            **{'first_name': first_name,'last_name': last_name, 
+                                            'age': age, 'phone_number': phone_number,
+                                            'gender': gender, "completed":'true'})
+                response.addRedirect(body=absolute_action_url, method='POST')
+                return Response(str(response), mimetype='text/xml')
+
+            elif digit == "2":
+                absolute_action_url = url_for('new_patient', _external=True)
+                response.addRedirect(body=absolute_action_url, method='GET')
+
+                response = plivoxml.Response()
+                absolute_action_url = url_for('new_patient', _external=True,
+                                            **{'first_name': first_name,'last_name': last_name, 
+                                            'age': age, 'phone_number': None,
+                                            'gender': gender_dict[digit]})
+                getDigits = plivoxml.GetDigits(action=absolute_action_url, method='POST',
+                                            timeout=120, numDigits=15, retries=1)
+                getDigits.addSpeak(body="Please enter your contact number in \
+                    international format, complete with the area and country codes.")
+                getDigits.addSpeak(body="Press hash when you are done.")
+                response.add(getDigits)
+                return Response(str(response), mimetype='text/xml')
+
+        elif not request.args.get('phone_number', None):
+            digit = request.form.get('Digits')
+            first_name = request.args.get('first_name', '0')
+            last_name = request.args.get('last_name', '0')
+            age = request.args.get('age', '0')
+            gender= request.args.get('last_name', '0')
+            phone_number = "+" + digit
+
             response = plivoxml.Response()
-            response.addSpeak(PLIVO_JOKE)
-
-            auth_id = current_app.config['PLIVO_AUTH']['id']
-            auth_token = current_app.config['PLIVO_AUTH']['token']
-
-            p = plivo.RestAPI(auth_id, auth_token)
-
-            # Get all live calls
-            response = p.get_live_calls()
-            print str(response)
-            print str(response[1]['calls'][0])
-
-            params = {
-                'call_uuid': str(response[1]['calls'][0]) # The ID of the call
-            }
-
-            response = p.get_live_call(params)
-            print str(response)
-
-            # a=Appointment(patient_id=patient_id,
-            #     availability_time= request.args.get('time', '0'),
-            #     availability_date= request.args.get('date', '0'),
-            #     status="Pending",
-            #     )
-            # db.session.add(a)
-            # db.session.commit()
-
-
-
-            # response.addSpeak("Your request for an appointment has been stored in our\
-            #  database with the appointment I D, " + str(a.id))
-            # response.addSpeak("We will try to schedule an appointment for you on " 
-            #     + calendar.month_name[int(a.availability_date[5:7])] + " " + 
-            #     a.availability_date[8:10] + " in the " + a.availability_time + '.')
-            # response.addSpeak("You will be contacted soon with further details \
-            #     once a doctor has been found for you. ")
-            # response.addSpeak("We hope to get you feeling better soon.  Good bye.")
-            # response.addWait(length=2)
-
+            absolute_action_url = url_for('new_patient', _external=True,
+                                        **{'first_name': first_name,'last_name': last_name, 
+                                        'age': age, 'phone_number': phone_number,
+                                        'gender': gender, "completed":'true'})
+            response.addRedirect(body=absolute_action_url, method='POST')
             return Response(str(response), mimetype='text/xml')
+
+        else:
+            first_name = request.args.get('first_name', '0')
+            last_name = request.args.get('last_name', '0')
+            age = request.args.get('age', '0')
+            gender = request.args.get('last_name', '0')
+            phone_number = request.args.get('phone_number', '0')
+            print first_name, last_name, age, gender, phone_number
+
+
 
 @app.route('/response/patient/<int:id>', methods=['GET', 'POST'])
 def existing_patient(id):
