@@ -161,7 +161,3 @@ class PhoneCalls(db.Model):
         db.session.add(c)
         db.session.commit()
 
-
-
-# Recap: "Amal Luiz, thank you for calling VillageMed.  We will try to schedule an appointment for you on August 11 between 3 and 5 in the evening.  A text message will be sent to you to confirm your appointment within the next 48 hours.  We hope to get you feeling better soon.  Good bye."
-
