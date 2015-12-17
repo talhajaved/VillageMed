@@ -1,4 +1,5 @@
-from flask import Response, render_template, flash, redirect, session, url_for, request, g
+from flask import Response, render_template, flash, \
+    redirect, session, url_for, request, g, current_app
 from flask.ext.login import login_user, logout_user, current_user, \
     login_required
 from app import app, db, lm
@@ -364,8 +365,8 @@ def new_patient():
                                         'age': age, 'gender': gender_dict[digit]})
             getDigits = plivoxml.GetDigits(action=absolute_action_url, method='POST',
                                         timeout=10, numDigits=1, retries=1)
-            getDigits.addSpeak(body="Press 1 to save this number as your contact number")
-            getDigits.addSpeak(body="Press 2 to enter a different contact number")
+            getDigits.addSpeak(body="To use this number as your contact number, press 1")
+            getDigits.addSpeak(body="or Press 2 to enter a different number")
             response.add(getDigits)
             return Response(str(response), mimetype='text/xml')
 
