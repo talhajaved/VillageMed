@@ -301,7 +301,7 @@ def new_appointment(patient_id):
                                        retries=1)
 
         getDigits.addSpeak(body='Please enter the date of your availability in 6 digits.')
-        getDigits.addSpeak(body='For example, December first of twenty fifteen would be 1 2 0 1 1 5.')
+        getDigits.addSpeak(body='For example, December first of twenty fifteen would be 1, 2, 0, 1, 1, 5.')
         response.add(getDigits)
         return Response(str(response), mimetype='text/xml')
 
@@ -397,9 +397,10 @@ def new_appointment(patient_id):
             response.addSpeak("Your request for an appointment has been stored in our\
              database with the appointment id " + str(a.id))
             response.addSpeak("We will try to schedule an appointment for you on " 
-                + calendar.month_name[availability_date[5:7]] + " " + 
-                availability_date[8:10] + " in the " + a.availability_time)
-            response.addSpeak("You will be contacted soon with further details once a doctor has been found for you")
+                + calendar.month_name[a.availability_date[5:7]] + " " + 
+                a.availability_date[8:10] + " in the " + a.availability_time)
+            response.addSpeak("You will be contacted soon with further details \
+                once a doctor has been found for you")
             response.addSpeak("We hope to get you feeling better soon.  Good bye.")
 
             return Response(str(response), mimetype='text/xml')
