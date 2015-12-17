@@ -278,22 +278,22 @@ def patient_id_input():
 def new_patient():
     response = plivoxml.Response()
     if request.method == 'GET':
-        # getdigits_action_url = url_for('new_patient', _external=True,
-        #                             **{'first_name': None,'last_name': None, 
-        #                             'age': None, 'gender': None})
         getdigits_action_url = url_for('new_patient', _external=True,
-                                    **{'first_name': "Talha",'last_name': "Javed", 
-                                    'age': '20', 'gender': None})
+                                    **{'first_name': None,'last_name': None, 
+                                    'age': None, 'gender': None})
+        # getdigits_action_url = url_for('new_patient', _external=True,
+        #                             **{'first_name': "Talha",'last_name': "Javed", 
+        #                             'age': '20', 'gender': None})
         getDigits = plivoxml.GetDigits(action=getdigits_action_url, retries=1,
                                            method='POST', timeout=180, numDigits=30)
-        # getDigits.addSpeak(body='Please enter your first name by \
-        #     spelling out the letters using the following convention:')
-        # getDigits.addSpeak(body="Press the number the letter is \
-        #     displayed on , and the place the letter is at on the key.")
-        # getDigits.addSpeak(body='For example, to enter A, press 2 1')
-        # getDigits.addSpeak(body='To enter the letter K, press 5 2')
-        # getDigits.addSpeak(body='For space, press 1 1')
-        # getDigits.addSpeak(body='To delete the last enetered letter, press 0 0')
+        getDigits.addSpeak(body='Please enter your first name by \
+            spelling out the letters using the following convention:')
+        getDigits.addSpeak(body="Press the number the letter is \
+            displayed on , and the place the letter is at on the key.")
+        getDigits.addSpeak(body='For example, to enter A, press 2 1')
+        getDigits.addSpeak(body='To enter the letter K, press 5 2')
+        getDigits.addSpeak(body='For space, press 1 1')
+        getDigits.addSpeak(body='To delete the last enetered letter, press 0 0')
         getDigits.addSpeak(body='Press the hash key when you are done')
         response.add(getDigits)
         return Response(str(response), mimetype='text/xml')
@@ -396,6 +396,7 @@ def new_patient():
                 phone_number = str(api_response[1]['caller_name'])
 
                 response = plivoxml.Response()
+                response.addSpeak("Please wait ")
                 absolute_action_url = url_for('new_patient', _external=True,
                                             **{'first_name': first_name,'last_name': last_name, 
                                             'age': age, 'phone_number': phone_number,
@@ -455,7 +456,7 @@ def new_patient():
              created a new profile. Your patient I D is , " + str(u.id))
             response.addSpeak(body='Now, you will be guided through the \
                 process of scheduling an appointment')
-            getDigits.addWait(length=1)
+            response.addWait(length=1)
             absolute_action_url = url_for('new_appointment', _external=True, patient_id=u.id)
             response.addRedirect(body=absolute_action_url, method='GET')
 
