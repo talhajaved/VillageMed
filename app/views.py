@@ -307,7 +307,8 @@ def new_appointment(patient_id):
 
     elif request.method == 'POST':
         if not request.args.get('date', None):
-            date = request.form.get('Digits')
+            digit = request.form.get('Digits')
+            date = '20' + digit[4:6] + '-' + digit[0:2] + '-' digit[2:4]
             response = plivoxml.Response()
             absolute_action_url = url_for('new_appointment', _external=True, patient_id=patient_id,
                                     **{'date': date,'time': None, 'severity': None})
@@ -318,11 +319,16 @@ def new_appointment(patient_id):
             response.add(getDigits)
             return Response(str(response), mimetype='text/xml')
         elif not request.args.get('time', None):
-            time = request.form.get('Digits')
+            digit = request.form.get('Digits')
             date = request.args.get('date', '0')
+            time_dict = {
+            "1":"morning",
+            "2":"afternoon", 
+            "3":"evening", 
+            }
             response = plivoxml.Response()
             absolute_action_url = url_for('new_appointment', _external=True, patient_id=patient_id,
-                                    **{'date': date,'time': time, 'severity': None})
+                                    **{'date': date,'time': time_dict[digit], 'severity': None})
             getDigits = plivoxml.GetDigits(action=absolute_action_url, method='POST',
                                         timeout=10, numDigits=1, retries=1)
             getDigits.addSpeak(body="Enter the urgency of your \
@@ -354,6 +360,44 @@ def new_appointment(patient_id):
             return Response(str(response), mimetype='text/xml')
         else:
             response = plivoxml.Response()
-            response.addSpeak(PLIVO_JOKE)
+
+            symptoms_string = request.form.get('Digits')
+            symptoms = ''
+            symptoms_dict = {
+            "1":"cough",
+            "2":"nausea", 
+            "3":"vomiting", 
+            "4":"fatigue",
+            "5":"sore throat",
+            "6":"weight loss", 
+            "7":"abdominal pain",
+            "8":"heart burn",
+            "9":"anxiety",
+            "0":"depressive symptoms"
+            }
+            for i in symptoms_string:
+                symptoms += symptoms_dict[i] ", "
+
+            a=Appointment(patient_id=patient_id,
+                availability_time= request.args.get('time', '0'),
+                availability_date= request.args.get('date', '0'),
+                status="Pending",
+                )
+            db.session.add(a)
+            db.session.commit()
+
+            p=PhoneCalls(patient_id=patient_id,
+                appointment_id=a.id,
+                symptoms=symptoms[:-2],
+                case_severity=request.args.get('severity', '0'),
+                )
+            db.session.add(p)
+            db.session.commit()
+
+            response.addSpeak("Your request for an appointment has been stored in our database with the appointment id " + a.id)
+            response.addSpeak("We will try to schedule an appointment for you on " + "August 11" + " in the " + a.availability_time)
+            response.addSpeak("You will be contacted soon with further details once a doctor has been found for you")
+            response.addSpeak("We hope to get you feeling better soon.  Good bye.")
+
             return Response(str(response), mimetype='text/xml')
      
