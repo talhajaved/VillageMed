@@ -383,6 +383,7 @@ def new_patient():
 
             # Get all live calls
             response = p.get_live_calls()
+            print str(response)
 
             params = {
                 'call_uuid': response[1]['calls'][0] # The ID of the call
