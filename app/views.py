@@ -395,9 +395,9 @@ def new_appointment(patient_id):
             db.session.commit()
 
             response.addSpeak("Your request for an appointment has been stored in our\
-             database with the appointment id, " + str(a.id))
+             database with the appointment I D, " + str(a.id))
             response.addSpeak("We will try to schedule an appointment for you on " 
-                + calendar.month_name[int(a.availability_date[5:7])] + " " + 
+                + calendar.month_name[int(a.availability_date[5:7])] + ", " + 
                 a.availability_date[8:10] + " in the " + a.availability_time)
             response.addSpeak("You will be contacted soon with further details \
                 once a doctor has been found for you")
