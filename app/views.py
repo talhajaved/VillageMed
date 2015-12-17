@@ -425,10 +425,10 @@ def new_appointment(patient_id):
                                     **{'date': None,'time': None, 'severity': None})
 
         getDigits = plivoxml.GetDigits(action=getdigits_action_url,
-                                       method='POST', timeout=60, numDigits=6,
+                                       method='POST', timeout=120, numDigits=6,
                                        retries=1)
 
-        getDigits.addSpeak(body='Please enter the date of your availability in 6 digits.')
+        getDigits.addSpeak(body='Please enter the date of your availability in 6 digits in the format m m d d y y.')
         getDigits.addSpeak(body='For example, December, first of twenty fifteen would be 1, 2, 0, 1, 1, 5.')
         response.add(getDigits)
         return Response(str(response), mimetype='text/xml')
