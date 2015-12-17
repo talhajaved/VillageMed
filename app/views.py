@@ -240,7 +240,6 @@ def ivr():
             absolute_action_url = url_for('patient_id_input', _external=True)
             response.addRedirect(body=absolute_action_url, method='GET')
         elif digit == "2":
-            # Listen to a song
             absolute_action_url = url_for('new_patient', _external=True)
             response.addRedirect(body=absolute_action_url, method='GET')
         else:
@@ -279,9 +278,12 @@ def patient_id_input():
 def new_patient():
     response = plivoxml.Response()
     if request.method == 'GET':
+        # getdigits_action_url = url_for('new_patient', _external=True,
+        #                             **{'first_name': None,'last_name': None, 
+        #                             'age': None, 'gender': None})
         getdigits_action_url = url_for('new_patient', _external=True,
-                                    **{'first_name': None,'last_name': None, 
-                                    'age': None, 'gender': None})
+                                    **{'first_name': "Talha",'last_name': "Javed", 
+                                    'age': '20', 'gender': None})
         getDigits = plivoxml.GetDigits(action=getdigits_action_url, retries=1,
                                            method='POST', timeout=180, numDigits=30)
         # getDigits.addSpeak(body='Please enter your first name by \
