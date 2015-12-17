@@ -288,7 +288,7 @@ def new_patient():
             absolute_action_url = url_for('new_patient', _external=True,
                                         **{'first_name': digit,'last_name': None, 
                                         'age': None, 'gender': None})
-            getDigits = plivoxml.GetDigits(action=getdigits_action_url, retries=1,
+            getDigits = plivoxml.GetDigits(action=absolute_action_url, retries=1,
                                            method='POST', timeout=180, numDigits=30)
             getDigits.addSpeak(body='Now enter your last name using the same convention as before.')
             getDigits.addSpeak(body='Press the hash key when you are done')
