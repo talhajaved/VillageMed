@@ -269,7 +269,7 @@ def patient_id_input():
         patient = Patient.query.get_or_404(int(digit))
         patient_response = "Welcome " + patient.name
         response.addSpeak(patient_response)
-        absolute_action_url = url_for('existing_patient', _external=True, id=patient.id)
+        absolute_action_url = url_for('patient_menu', _external=True, id=patient.id)
         response.addRedirect(body=absolute_action_url, method='GET')
 
         return Response(str(response), mimetype='text/xml')
@@ -368,6 +368,7 @@ def new_patient():
             getDigits = plivoxml.GetDigits(action=absolute_action_url, method='POST',
                                         timeout=10, numDigits=1, retries=1)
             getDigits.addSpeak(body="To use this number as your contact number, press 1.")
+            getDigits.addWait(length=1)
             getDigits.addSpeak(body="or Press 2 to enter a different number")
             response.add(getDigits)
             return Response(str(response), mimetype='text/xml')
@@ -411,7 +412,7 @@ def new_patient():
                 absolute_action_url = url_for('new_patient', _external=True,
                                             **{'first_name': first_name,'last_name': last_name, 
                                             'age': age, 'phone_number': None,
-                                            'gender': gender_dict[digit]})
+                                            'gender': gender})
                 getDigits = plivoxml.GetDigits(action=absolute_action_url, method='POST',
                                             timeout=120, numDigits=15, retries=1)
                 getDigits.addSpeak(body="Please enter your contact number in \
@@ -440,17 +441,34 @@ def new_patient():
             first_name = request.args.get('first_name', '0')
             last_name = request.args.get('last_name', '0')
             age = request.args.get('age', '0')
-            gender = request.args.get('last_name', '0')
+            gender = request.args.get('gender', '0')
             phone_number = request.args.get('phone_number', '0')
             print first_name, last_name, age, gender, phone_number
 
+            u=Patient(name=first_name + " " + last_name,
+                age=age,
+                gender=gender,
+                phone_number=phone_number
+                )
+            db.session.add(u)
+            db.session.commit()
+
+            response = plivoxml.Response()
+            response.addSpeak("Congratulations " + u.name + ", you have successfully \
+             created a new profile. Your patient I D, " + str(u.id))
+            response.addSpeak(body='Now, you will now be guided through the \
+                process of scheduling an appointment')
+            absolute_action_url = url_for('new_appointment', _external=True, patient_id=id)
+            response.addRedirect(body=absolute_action_url, method='GET')
+
+            return Response(str(response), mimetype='text/xml')
 
 
 @app.route('/response/patient/<int:id>', methods=['GET', 'POST'])
-def existing_patient(id):
+def patient_menu(id):
     response = plivoxml.Response()
     if request.method == 'GET':
-        getdigits_action_url = url_for('existing_patient', _external=True, id=id)
+        getdigits_action_url = url_for('patient_menu', _external=True, id=id)
         getDigits = plivoxml.GetDigits(action=getdigits_action_url,
                                        method='POST', timeout=10, numDigits=4,
                                        retries=1)
