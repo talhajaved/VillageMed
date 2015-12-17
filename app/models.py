@@ -106,6 +106,7 @@ class Appointment(db.Model):
             availability_date="2015-12-28",
             status="Pending",
             )
+        db.session.add(a)
         a=Appointment(patient_id=3,
             availability_time="Afternoon",
             availability_date="2016-01-23",
