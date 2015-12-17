@@ -296,14 +296,14 @@ def new_patient():
         getdigits_action_url = url_for('new_appointment', _external=True,
                                     **{'first_name': None,'last_name': None, 
                                     'age': None, 'gender': None})
-        getDigits = plivoxml.GetDigits(action=getdigits_action_url, retries=1
+        getDigits = plivoxml.GetDigits(action=getdigits_action_url, retries=1,
                                            method='POST', timeout=180, numDigits=30)
         getDigits.addSpeak(body='Please enter your first name by \
             spelling out the letters using the following convention:')
         getDigits.addSpeak(body="Press the number the letter is \
             displayed on , and the place the letter is at on the key.")
-        getDigits.addSpeak(body='For example, to enter “A”, press 2 1')
-        getDigits.addSpeak(body='To enter the letter “K”, press 5 2')
+        getDigits.addSpeak(body='For example, to enter A, press 2 1')
+        getDigits.addSpeak(body='To enter the letter K, press 5 2')
         getDigits.addSpeak(body='Press the hash key when you are done')
         response.add(getDigits)
         return Response(str(response), mimetype='text/xml')
@@ -315,7 +315,7 @@ def new_patient():
             absolute_action_url = url_for('new_appointment', _external=True,
                                         **{'first_name': digit,'last_name': None, 
                                         'age': None, 'gender': None})
-            getDigits = plivoxml.GetDigits(action=getdigits_action_url, retries=1
+            getDigits = plivoxml.GetDigits(action=getdigits_action_url, retries=1,
                                            method='POST', timeout=180, numDigits=30)
             getDigits.addSpeak(body='Now enter your last name using the same convention as before.')
             getDigits.addSpeak(body='Press the hash key when you are done')
