@@ -223,13 +223,13 @@ def ivr():
         digit = request.form.get('Digits')
 
         if digit == "1":
-            # absolute_action_url = url_for('existing_patient', _external=True)
-            # response.addRedirect(body=absolute_action_url, method='GET')
-            absolute_action_url = url_for('new_appointment', _external=True, patient_id=1)
+            absolute_action_url = url_for('existing_patient', _external=True)
             response.addRedirect(body=absolute_action_url, method='GET')
         elif digit == "2":
             # Listen to a song
-            response.addPlay(PLIVO_SONG)
+            response.addSpeak(body="We will create a new patient profile for you.")
+            absolute_action_url = url_for('new_patient', _external=True)
+            response.addRedirect(body=absolute_action_url, method='GET')
         else:
             response.addSpeak(WRONG_INPUT_MESSAGE)
 
@@ -289,6 +289,134 @@ def response_patient(id):
             response.addSpeak(PLIVO_JOKE)
         return Response(str(response), mimetype='text/xml')
 
+@app.route('/response/new_patient/', methods=['GET', 'POST'])
+def new_patient():
+    response = plivoxml.Response()
+    if request.method == 'GET':
+        getdigits_action_url = url_for('new_appointment', _external=True,
+                                    **{'first_name': None,'last_name': None, 
+                                    'age': None, 'gender': None})
+        getDigits = plivoxml.GetDigits(action=getdigits_action_url, retries=1
+                                           method='POST', timeout=180, numDigits=30)
+        getDigits.addSpeak(body='Please enter your first name by \
+            spelling out the letters using the following convention:')
+        getDigits.addSpeak(body="Press the number the letter is \
+            displayed on , and the place the letter is at on the key.")
+        getDigits.addSpeak(body='For example, to enter “A”, press 2 1')
+        getDigits.addSpeak(body='To enter the letter “K”, press 5 2')
+        getDigits.addSpeak(body='Press the hash key when you are done')
+        response.add(getDigits)
+        return Response(str(response), mimetype='text/xml')
+
+    elif request.method == 'POST':
+        if not request.args.get('first_name', None):
+            digit = request.form.get('Digits').title()
+            response = plivoxml.Response()
+            absolute_action_url = url_for('new_appointment', _external=True,
+                                        **{'first_name': digit,'last_name': None, 
+                                        'age': None, 'gender': None})
+            getDigits = plivoxml.GetDigits(action=getdigits_action_url, retries=1
+                                           method='POST', timeout=180, numDigits=30)
+            getDigits.addSpeak(body='Now enter your last name using the same convention as before.')
+            getDigits.addSpeak(body='Press the hash key when you are done')
+            response.add(getDigits)
+            return Response(str(response), mimetype='text/xml')
+
+        elif not request.args.get('last_name', None):
+            digit = request.form.get('Digits').title()
+            first_name = request.args.get('first_name', '0')
+            response = plivoxml.Response()
+            absolute_action_url = url_for('new_appointment', _external=True,
+                                        **{'first_name': first_name,'last_name': digit, 
+                                        'age': None, 'gender': None})
+            getDigits = plivoxml.GetDigits(action=absolute_action_url, method='POST',
+                                        timeout=10, numDigits=2, retries=1)
+            getDigits.addSpeak(body="Enter your age using the key pad.")
+            response.add(getDigits)
+            return Response(str(response), mimetype='text/xml')
+
+        elif not request.args.get('age', None):
+            digit = request.form.get('Digits')
+            first_name = request.args.get('first_name', '0')
+            last_name = request.args.get('last_name', '0')
+            response = plivoxml.Response()
+            absolute_action_url = url_for('new_appointment', _external=True,
+                                        **{'first_name': first_name,'last_name': last_name, 
+                                        'age': digit, 'gender': None})
+            getDigits = plivoxml.GetDigits(action=absolute_action_url, method='POST',
+                                        timeout=10, numDigits=1, retries=1)
+            getDigits.addSpeak(body="Press the number corresponding to your gender.\
+             1 for female, 2 for male, 3 for other.")
+            response.add(getDigits)
+            return Response(str(response), mimetype='text/xml')
+
+        elif not request.args.get('gender', None):
+            digit = request.form.get('Digits')
+            first_name = request.args.get('first_name', '0')
+            last_name = request.args.get('last_name', '0')
+            age = request.args.get('age', '0')
+            gender_dict = {"1":"Female","2":"Male", "3":"Other"}
+            print first_name, last_name, age, gender_dict[digit]
+            response = plivoxml.Response()
+            absolute_action_url = url_for('new_appointment', _external=True,
+                                        **{'first_name': first_name,'last_name': last_name, 
+                                        'age': age, 'gender': gender_dict[digit]})
+            getDigits = plivoxml.GetDigits(action=absolute_action_url, method='POST',
+                                        timeout=10, numDigits=1, retries=1)
+            getDigits.addSpeak(body="Press the number corresponding to your gender.\
+             1 for female, 2 for male, 3 for other.")
+            response.add(getDigits)
+            return Response(str(response), mimetype='text/xml')
+
+        else:
+            response = plivoxml.Response()
+            response.addSpeak(PLIVO_JOKE)
+
+            # symptoms_string = request.form.get('Digits')
+            # symptoms = ''
+            # symptoms_dict = {
+            # "1":"Cough",
+            # "2":"Nausea", 
+            # "3":"Vomiting", 
+            # "4":"Fatigue",
+            # "5":"Sore throat",
+            # "6":"Weight loss", 
+            # "7":"Abdominal pain",
+            # "8":"Heart burn",
+            # "9":"Anxiety",
+            # "0":"Depressive symptoms"
+            # }
+            # for i in symptoms_string:
+            #     symptoms += symptoms_dict[i] + ", "
+
+            # a=Appointment(patient_id=patient_id,
+            #     availability_time= request.args.get('time', '0'),
+            #     availability_date= request.args.get('date', '0'),
+            #     status="Pending",
+            #     )
+            # db.session.add(a)
+            # db.session.commit()
+
+            # p=PhoneCalls(patient_id=patient_id,
+            #     appointment_id=a.id,
+            #     symptoms=symptoms[:-2],
+            #     case_severity=request.args.get('severity', '0'),
+            #     )
+            # db.session.add(p)
+            # db.session.commit()
+
+            # response.addSpeak("Your request for an appointment has been stored in our\
+            #  database with the appointment I D, " + str(a.id))
+            # response.addSpeak("We will try to schedule an appointment for you on " 
+            #     + calendar.month_name[int(a.availability_date[5:7])] + " " + 
+            #     a.availability_date[8:10] + " in the " + a.availability_time + '.')
+            # response.addSpeak("You will be contacted soon with further details \
+            #     once a doctor has been found for you. ")
+            # response.addSpeak("We hope to get you feeling better soon.  Good bye.")
+            # response.addWait(length=2)
+
+            return Response(str(response), mimetype='text/xml')
+
 @app.route('/response/new_appointment/<int:patient_id>', methods=['GET', 'POST'])
 def new_appointment(patient_id):
     response = plivoxml.Response()
@@ -318,6 +446,7 @@ def new_appointment(patient_id):
                 for morning, 2 for afternoon, and 3 for evening.")
             response.add(getDigits)
             return Response(str(response), mimetype='text/xml')
+
         elif not request.args.get('time', None):
             digit = request.form.get('Digits')
             date = request.args.get('date', '0')
@@ -335,6 +464,7 @@ def new_appointment(patient_id):
                 medical needs on an icreasing scale of one to five.")
             response.add(getDigits)
             return Response(str(response), mimetype='text/xml')
+
         elif not request.args.get('severity', None):
             severity = request.form.get('Digits')
             date = request.args.get('date', '0')
@@ -358,6 +488,7 @@ def new_appointment(patient_id):
             getDigits.addSpeak(body="Press the hash key when you have selected all the relevant symptoms")
             response.add(getDigits)
             return Response(str(response), mimetype='text/xml')
+
         else:
             response = plivoxml.Response()
 
@@ -405,4 +536,5 @@ def new_appointment(patient_id):
             response.addWait(length=2)
 
             return Response(str(response), mimetype='text/xml')
-     
+
+                 
