@@ -405,9 +405,6 @@ def new_patient():
                 return Response(str(response), mimetype='text/xml')
 
             elif digit == "2":
-                absolute_action_url = url_for('new_patient', _external=True)
-                response.addRedirect(body=absolute_action_url, method='GET')
-
                 response = plivoxml.Response()
                 absolute_action_url = url_for('new_patient', _external=True,
                                             **{'first_name': first_name,'last_name': last_name, 
@@ -428,8 +425,6 @@ def new_patient():
             age = request.args.get('age', '0')
             gender= request.args.get('last_name', '0')
             phone_number = "+" + digit
-
-            print "Hereeee error"
 
             response = plivoxml.Response()
             absolute_action_url = url_for('new_patient', _external=True,
