@@ -428,6 +428,7 @@ def new_patient():
             phone_number = "+" + digit
 
             response = plivoxml.Response()
+            response.addSpeak("Please wait ")
             absolute_action_url = url_for('new_patient', _external=True,
                                         **{'first_name': first_name,'last_name': last_name, 
                                         'age': age, 'phone_number': phone_number,
