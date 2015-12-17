@@ -16,11 +16,13 @@
         </div>
         <div class="navbar-collapse collapse" style="font-size:1.7em; padding-top: 8px; font-weight: bold; font-family: 'Open Sans', sans-serif;">
             <ul class="nav navbar-nav navbar-left">
-                <li><a href="{{ url_for('about') }}">About</a></li>
-                <li><a href="{{ url_for('donate') }}">Donate</a></li>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
                 {% if g.user.is_authenticated() %}
                 <li><a href="{{ url_for('user') }}">Profile</a></li>
                 {% endif %}
+                <li><a href="{{ url_for('donate') }}">Donate</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if g.user.is_authenticated() %}
