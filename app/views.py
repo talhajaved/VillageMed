@@ -223,7 +223,7 @@ def ivr():
         digit = request.form.get('Digits')
 
         if digit == "1":
-            absolute_action_url = url_for('existing_patient', _external=True)
+            absolute_action_url = url_for('patient_id_input', _external=True)
             response.addRedirect(body=absolute_action_url, method='GET')
         elif digit == "2":
             # Listen to a song
@@ -235,12 +235,12 @@ def ivr():
 
         return Response(str(response), mimetype='text/xml')
 
-@app.route('/response/patient_menu/', methods=['GET', 'POST'])
-def patient_menu():
+@app.route('/response/patient_id_input/', methods=['GET', 'POST'])
+def patient_id_input():
     response = plivoxml.Response()
     if request.method == 'GET':
         # GetDigit XML Docs - http://plivo.com/docs/xml/getdigits/
-        getdigits_action_url = url_for('patient_menu', _external=True)
+        getdigits_action_url = url_for('patient_id_input', _external=True)
         getDigits = plivoxml.GetDigits(action=getdigits_action_url,
                                        method='POST', timeout=10, numDigits=4,
                                        retries=1)
