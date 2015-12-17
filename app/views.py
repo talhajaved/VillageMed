@@ -397,10 +397,10 @@ def new_appointment(patient_id):
             response.addSpeak("Your request for an appointment has been stored in our\
              database with the appointment I D, " + str(a.id))
             response.addSpeak("We will try to schedule an appointment for you on " 
-                + calendar.month_name[int(a.availability_date[5:7])] + ", " + 
-                a.availability_date[8:10] + " in the " + a.availability_time)
+                + calendar.month_name[int(a.availability_date[5:7])] + " " + 
+                a.availability_date[8:10] + " in the " + a.availability_time + '.')
             response.addSpeak("You will be contacted soon with further details \
-                once a doctor has been found for you")
+                once a doctor has been found for you. ")
             response.addSpeak("We hope to get you feeling better soon.  Good bye.")
             response.addWait(length=2)
 
