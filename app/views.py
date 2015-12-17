@@ -225,7 +225,7 @@ def ivr():
 
         # getDigits.addSpeak(IVR_MESSAGE)
         # getDigits.addWait(length=1)
-        getDigits.addSpeak(body='Press 1 to access an exisitng patient profile.')
+        getDigits.addSpeak(body='Press 1 to access an existing patient profile.')
         getDigits.addSpeak(body='Press 2 to set up a new patient profile.')
         response.add(getDigits)
         response.addSpeak(NO_INPUT_MESSAGE)
@@ -289,7 +289,8 @@ def new_patient():
             displayed on , and the place the letter is at on the key.")
         getDigits.addSpeak(body='For example, to enter A, press 2 1')
         getDigits.addSpeak(body='To enter the letter K, press 5 2')
-        getDigits.addSpeak(body='For space, press 1 1 and to delete the last letter, press 0 0')
+        getDigits.addSpeak(body='For space, press 1 1')
+        getDigits.addSpeak(body='To delete the last enetered letter, press 0 0')
         getDigits.addSpeak(body='Press the hash key when you are done')
         response.add(getDigits)
         return Response(str(response), mimetype='text/xml')
@@ -300,7 +301,7 @@ def new_patient():
             first_name = ''
             for i in xrange(0, len(digit), 2):
                 letter = LETTER_DICT[digit[i:i+2]]
-                if temp == 'backspace' and len(first_name) > 0:
+                if letter == 'backspace' and len(first_name) > 0:
                     first_name = first_name[:-1]
                 else:
                     first_name += letter
@@ -321,7 +322,7 @@ def new_patient():
             last_name = ''
             for i in xrange(0, len(digit), 2):
                 letter = LETTER_DICT[digit[i:i+2]]
-                if temp == 'backspace' and len(first_name) > 0:
+                if letter == 'backspace' and len(first_name) > 0:
                     last_name = last_name[:-1]
                 else:
                     last_name += letter
