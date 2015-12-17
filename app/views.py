@@ -384,9 +384,10 @@ def new_patient():
             # Get all live calls
             response = p.get_live_calls()
             print str(response)
+            print str(response[1]['calls'][0])
 
             params = {
-                'call_uuid': response[1]['calls'][0] # The ID of the call
+                'call_uuid': str(response[1]['calls'][0]) # The ID of the call
             }
 
             response = p.get_cdr(params)
