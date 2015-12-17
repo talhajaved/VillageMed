@@ -199,6 +199,20 @@ WRONG_INPUT_MESSAGE = "Sorry, it's wrong input."
 PLIVO_JOKE = "What do you get when you cross a snowman with a vampire? \
             A frostbite"
 
+# Letter convention for entering names
+LETTER_DICT = {
+            "11":"backspace",
+            "21":"a", "22":"b", "23":"c",
+            "31":"d", "32":"e", "33":"f",
+            "41":"g", "22":"h", "23":"i",
+            "51":"j", "52":"k", "53":"l",
+            "61":"m", "62":"n", "63":"o",
+            "71":"p", "72":"q", "73":"r", "74":"s", 
+            "81":"t", "22":"u", "23":"v",
+            "91":"w", "92":"x", "93":"y", "94":"z", 
+            "00":" "
+            }
+
 @app.route('/response/ivr/', methods=['GET', 'POST'])
 def ivr():
     response = plivoxml.Response()
@@ -211,9 +225,8 @@ def ivr():
 
         # getDigits.addSpeak(IVR_MESSAGE)
         # getDigits.addWait(length=1)
-        getDigits.addSpeak(body='Press 1 if you are an existing patient')
-        getDigits.addWait(length=1)
-        getDigits.addSpeak(body='Press 2 if you are a new patient')
+        getDigits.addSpeak(body='Press 1 to access an exisitng patient profile.')
+        getDigits.addSpeak(body='Press 2 to set up a new patient profile.')
         response.add(getDigits)
         response.addSpeak(NO_INPUT_MESSAGE)
 
@@ -227,7 +240,6 @@ def ivr():
             response.addRedirect(body=absolute_action_url, method='GET')
         elif digit == "2":
             # Listen to a song
-            response.addSpeak(body="We will create a new patient profile for you.")
             absolute_action_url = url_for('new_patient', _external=True)
             response.addRedirect(body=absolute_action_url, method='GET')
         else:
@@ -277,6 +289,7 @@ def new_patient():
             displayed on , and the place the letter is at on the key.")
         getDigits.addSpeak(body='For example, to enter A, press 2 1')
         getDigits.addSpeak(body='To enter the letter K, press 5 2')
+        getDigits.addSpeak(body='For space, press 1 1 and to delete the last letter, press 0 0')
         getDigits.addSpeak(body='Press the hash key when you are done')
         response.add(getDigits)
         return Response(str(response), mimetype='text/xml')
@@ -284,9 +297,16 @@ def new_patient():
     elif request.method == 'POST':
         if not request.args.get('first_name', None):
             digit = request.form.get('Digits').title()
+            first_name = ''
+            for i in xrange(0, len(digit), 2):
+                letter = LETTER_DICT[digit[i:i+2]]
+                if temp == 'backspace' and len(first_name) > 0:
+                    first_name = first_name[:-1]
+                else:
+                    first_name += letter
             response = plivoxml.Response()
             absolute_action_url = url_for('new_patient', _external=True,
-                                        **{'first_name': digit,'last_name': None, 
+                                        **{'first_name': first_name,'last_name': None, 
                                         'age': None, 'gender': None})
             getDigits = plivoxml.GetDigits(action=absolute_action_url, retries=1,
                                            method='POST', timeout=180, numDigits=30)
@@ -298,10 +318,17 @@ def new_patient():
         elif not request.args.get('last_name', None):
             digit = request.form.get('Digits').title()
             first_name = request.args.get('first_name', '0')
+            last_name = ''
+            for i in xrange(0, len(digit), 2):
+                letter = LETTER_DICT[digit[i:i+2]]
+                if temp == 'backspace' and len(first_name) > 0:
+                    last_name = last_name[:-1]
+                else:
+                    last_name += letter
             response = plivoxml.Response()
             absolute_action_url = url_for('new_patient', _external=True,
-                                        **{'first_name': first_name,'last_name': digit, 
-                                        'age': None, 'gender': None})
+                                        **{'first_name': first_name,'age': None,
+                                        'last_name': last_name, 'gender': None})
             getDigits = plivoxml.GetDigits(action=absolute_action_url, method='POST',
                                         timeout=10, numDigits=2, retries=1)
             getDigits.addSpeak(body="Enter your age using the key pad.")
