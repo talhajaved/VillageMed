@@ -322,9 +322,9 @@ def new_appointment(patient_id):
             digit = request.form.get('Digits')
             date = request.args.get('date', '0')
             time_dict = {
-            "1":"morning",
-            "2":"afternoon", 
-            "3":"evening", 
+            "1":"Morning",
+            "2":"Afternoon", 
+            "3":"Evening", 
             }
             response = plivoxml.Response()
             absolute_action_url = url_for('new_appointment', _external=True, patient_id=patient_id,
@@ -364,16 +364,16 @@ def new_appointment(patient_id):
             symptoms_string = request.form.get('Digits')
             symptoms = ''
             symptoms_dict = {
-            "1":"cough",
-            "2":"nausea", 
-            "3":"vomiting", 
-            "4":"fatigue",
-            "5":"sore throat",
-            "6":"weight loss", 
-            "7":"abdominal pain",
-            "8":"heart burn",
-            "9":"anxiety",
-            "0":"depressive symptoms"
+            "1":"Cough",
+            "2":"Nausea", 
+            "3":"Vomiting", 
+            "4":"Fatigue",
+            "5":"Sore throat",
+            "6":"Weight loss", 
+            "7":"Abdominal pain",
+            "8":"Heart burn",
+            "9":"Anxiety",
+            "0":"Depressive symptoms"
             }
             for i in symptoms_string:
                 symptoms += symptoms_dict[i] + ", "
