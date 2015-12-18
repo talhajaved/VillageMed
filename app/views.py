@@ -487,8 +487,6 @@ def patient_menu(id):
             absolute_action_url = url_for('new_appointment', _external=True, patient_id=id)
             response.addRedirect(body=absolute_action_url, method='GET')
         else: 
-            digit = request.form.get('Digits')
-
             appointment = Appointment.query.get_or_404(int(digit))
             if appointment.patient_id != id:
                 response.addSpeak("Invalid appointment I D")
@@ -499,20 +497,43 @@ def patient_menu(id):
                 if appointment.status == "Completed":
                     response.addSpeak(" was successfully completed with doctor ")
                     response.addSpeak(appointment.doctor.name + " on " + appointment.appointment_time)
+                    absolute_action_url = url_for('patient_menu', _external=True, id=id)
+                    response.addRedirect(body=absolute_action_url, method='GET')
                 else:
                     if appointment.status == "Scheduled":
                         response.addSpeak(" is scheduled with doctor ")
                         response.addSpeak(appointment.doctor.name + " for " + appointment.appointment_time)
                     else:
-                        response.addSpeak(" pending. You will be contacted soon with further \
+                        response.addSpeak(" is pending. You will be contacted soon with further \
                             details once a doctor has been found for you. ")
+                    absolute_action_url = url_for('appointment_menu', _external=True, id=appointment.id)
+                    response.addRedirect(body=absolute_action_url, method='GET')
+        return Response(str(response), mimetype='text/xml')
 
+@app.route('/response/appointment/<int:id>', methods=['GET', 'POST'])
+def appointment_menu(id):
+    response = plivoxml.Response()
+    if request.method == 'GET':
+        getdigits_action_url = url_for('appointment_menu', _external=True, id=id)
+        getDigits = plivoxml.GetDigits(action=getdigits_action_url,
+                                       method='POST', timeout=10, numDigits=1,
+                                       retries=1)
 
-            # patient_response = "Welcome " + patient.name
-            # response.addSpeak(patient_response)
-            absolute_action_url = url_for('patient_menu', _external=True, id=id)
+        getDigits.addSpeak(body='Press 1 to add more information to the current appointment.')
+        getDigits.addWait(length=1)
+        getDigits.addSpeak(body='Press 2 to go back to patient menu.')
+        response.add(getDigits)
+        return Response(str(response), mimetype='text/xml')
+
+    elif request.method == 'POST':
+        digit = request.form.get('Digits')
+        appointment = Appointment.query.get_or_404(int(digit))
+        if digit == "1":
+            absolute_action_url = url_for('patient_menu', _external=True, id=appointment.patient_id)
             response.addRedirect(body=absolute_action_url, method='GET')
-
+        else: 
+            absolute_action_url = url_for('new_call', _external=True, appointment_id=id)
+            response.addRedirect(body=absolute_action_url, method='GET')
         return Response(str(response), mimetype='text/xml')
 
 @app.route('/response/new_appointment/<int:patient_id>', methods=['GET', 'POST'])
@@ -630,9 +651,93 @@ def new_appointment(patient_id):
                 a.availability_date[8:10] + " in the " + a.availability_time + '.')
             response.addSpeak("You will be contacted soon with further details \
                 once a doctor has been found for you. ")
-            response.addSpeak("We hope to get you feeling better soon.  Good bye.")
-            response.addWait(length=2)
+            response.addWait(length=1)
+            response.addSpeak("You will now be taken back to the patient menu.")
+            absolute_action_url = url_for('patient_menu', _external=True, id=patient_id)
+            response.addRedirect(body=absolute_action_url, method='GET')
 
             return Response(str(response), mimetype='text/xml')
+
+@app.route('/response/new_call/<int:appointment_id>', methods=['GET', 'POST'])
+def new_call(appointment_id):
+    response = plivoxml.Response()
+    if request.method == 'GET':
+        getdigits_action_url = url_for('new_appointment', _external=True, appointment_id=patient_id,
+                                    **{'date': None,'time': None, 'severity': None})
+
+        getDigits = plivoxml.GetDigits(action=getdigits_action_url,
+                                       method='POST', timeout=120, numDigits=1,
+                                       retries=1)
+
+        getDigits.addSpeak(body="Enter the urgency of your \
+                medical needs on an icreasing scale of one to five.")
+        response.add(getDigits)
+        return Response(str(response), mimetype='text/xml')
+
+    elif request.method == 'POST':
+        if not request.args.get('severity', None):
+            severity = request.form.get('Digits')
+            response = plivoxml.Response()
+            absolute_action_url = url_for('new_call', _external=True, patient_id=patient_id,
+                                    **{'severity': severity})
+            getDigits = plivoxml.GetDigits(action=absolute_action_url, method='POST',
+                                        timeout=120, numDigits=10, retries=1)
+            getDigits.addSpeak(body="Press the digits corresponding to your symptoms") 
+            getDigits.addSpeak(body="1 for cough") 
+            getDigits.addSpeak(body="2 for nausea") 
+            getDigits.addSpeak(body="3 for vomiting") 
+            getDigits.addSpeak(body="4 for fatigue") 
+            getDigits.addSpeak(body="5 for sore throat") 
+            getDigits.addSpeak(body="6 for weight loss") 
+            getDigits.addSpeak(body="7 for abdominal pain")
+            getDigits.addSpeak(body="8 for heart burn")  
+            getDigits.addSpeak(body="9 for anxiety") 
+            getDigits.addSpeak(body="0 for depressive symptoms") 
+            getDigits.addSpeak(body="Press the hash key when you have selected all the relevant symptoms")
+            response.add(getDigits)
+            return Response(str(response), mimetype='text/xml')
+
+        else:
+            response = plivoxml.Response()
+
+            symptoms_string = request.form.get('Digits')
+            symptoms = ''
+            symptoms_dict = {
+            "1":"Cough",
+            "2":"Nausea", 
+            "3":"Vomiting", 
+            "4":"Fatigue",
+            "5":"Headache",
+            "6":"Fever", 
+            "7":"Numbness",
+            "8":"Weight loss",
+            "9":"Abdominal pain",
+            "0":"Heart burn"
+            }
+            for i in symptoms_string:
+                symptoms += symptoms_dict[i] + ", "
+
+            a = Appointment.query.get_or_404(id)
+
+            p=PhoneCalls(patient_id=a.patient_id,
+                appointment_id=a.id,
+                symptoms=symptoms[:-2],
+                case_severity=request.args.get('severity', '0'),
+                )
+            db.session.add(p)
+            db.session.commit()
+
+            response.addSpeak("The provided information has been successfully added to your \
+                appointment with the appointment I D, " + str(a.id))
+            response.addSpeak("We hope to get you feeling better soon.")
+            response.addWait(length=1)
+            response.addSpeak("You will now be taken back to the patient menu.")
+            absolute_action_url = url_for('patient_menu', _external=True, id=a.patient_id)
+            response.addRedirect(body=absolute_action_url, method='GET')
+
+            return Response(str(response), mimetype='text/xml')
+
+
+
 
                  
