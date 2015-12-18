@@ -497,7 +497,7 @@ def patient_menu(id):
                 if appointment.status == "Completed":
                     response.addSpeak(" was successfully completed with doctor ")
                     response.addSpeak(appointment.doctor.name + " on " + str(appointment.appointment_time))
-                    getDigits.addWait(length=1)
+                    response.addWait(length=1)
                     absolute_action_url = url_for('patient_menu', _external=True, id=id)
                     response.addRedirect(body=absolute_action_url, method='GET')
                 else:
@@ -507,7 +507,7 @@ def patient_menu(id):
                     else:
                         response.addSpeak(" is pending. You will be contacted soon with further \
                             details once a doctor has been found for you. ")
-                    getDigits.addWait(length=1)
+                    response.addWait(length=1)
                     absolute_action_url = url_for('appointment_menu', _external=True, id=appointment.id)
                     response.addRedirect(body=absolute_action_url, method='GET')
         return Response(str(response), mimetype='text/xml')
