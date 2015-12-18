@@ -232,7 +232,7 @@ def ivr():
         getDigits.addSpeak(body='Press 1 to access an existing patient profile.')
         getDigits.addSpeak(body='Press 2 to set up a new profile.')
         response.add(getDigits)
-        response.addSpeak(NO_INPUT_MESSAGE)
+        # response.addSpeak(NO_INPUT_MESSAGE)
 
         return Response(str(response), mimetype='text/xml')
 
@@ -262,7 +262,7 @@ def patient_id_input():
 
         getDigits.addSpeak(body='Enter your patient ID, followed by the hash key')
         response.add(getDigits)
-        response.addSpeak(NO_INPUT_MESSAGE)
+        # response.addSpeak(NO_INPUT_MESSAGE)
 
         return Response(str(response), mimetype='text/xml')
 
@@ -719,7 +719,7 @@ def new_call(appointment_id):
             for i in symptoms_string:
                 symptoms += symptoms_dict[i] + ", "
 
-            a = Appointment.query.get_or_404(id)
+            a = Appointment.query.get_or_404(appointment_id)
 
             p=PhoneCalls(patient_id=a.patient_id,
                 appointment_id=a.id,
