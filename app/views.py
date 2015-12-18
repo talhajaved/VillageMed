@@ -490,7 +490,7 @@ def patient_menu(id):
             appointment = Appointment.query.get_or_404(int(digit))
             if appointment.patient_id != id:
                 response.addSpeak("Invalid appointment I D")
-                absolute_action_url = url_for('patient_menu', _external=True, id=patient.id)
+                absolute_action_url = url_for('patient_menu', _external=True, id=id)
                 response.addRedirect(body=absolute_action_url, method='GET')
             else:
                 response.addSpeak("Your appointment with I D, " + digit)
