@@ -528,7 +528,7 @@ def appointment_menu(id):
     elif request.method == 'POST':
         digit = request.form.get('Digits')
         appointment = Appointment.query.get_or_404(int(digit))
-        if digit == "1":
+        if digit == "2":
             absolute_action_url = url_for('patient_menu', _external=True, id=appointment.patient_id)
             response.addRedirect(body=absolute_action_url, method='GET')
         else: 
@@ -662,7 +662,7 @@ def new_appointment(patient_id):
 def new_call(appointment_id):
     response = plivoxml.Response()
     if request.method == 'GET':
-        getdigits_action_url = url_for('new_appointment', _external=True, appointment_id=patient_id,
+        getdigits_action_url = url_for('new_appointment', _external=True, appointment_id=appointment_id,
                                     **{'date': None,'time': None, 'severity': None})
 
         getDigits = plivoxml.GetDigits(action=getdigits_action_url,
