@@ -154,6 +154,7 @@ class PhoneCalls(db.Model):
             symptoms="Cough, Nausea, Fatigue",
             case_severity="1",
             )
+        db.session.add(c)
         c=PhoneCalls(patient_id=3,
             appointment_id=3,
             symptoms="Heartburn, Weight loss, Vomiting",
