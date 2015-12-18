@@ -87,9 +87,11 @@ def index():
 @login_required
 def user():
     user = g.user
-    scheduled_query = Appointment.query.filter(Appointment.status == "Scheduled")
+    scheduled_query = Appointment.query.filter(Appointment.doctor_id == current_user.id).\
+    filter(Appointment.status == "Scheduled")
     scheduled_appointments = scheduled_query.order_by(Appointment.timestamp.desc())
-    completed_query = Appointment.query.filter(Appointment.status == "Completed")
+    completed_query = Appointment.query.filter(Appointment.doctor_id == current_user.id).\
+    filter(Appointment.status == "Completed")
     completed_appointments = completed_query.order_by(Appointment.timestamp.desc())
     return render_template('user.html', user=user, 
         scheduled_appointments=scheduled_appointments, completed_appointments=completed_appointments)
@@ -484,29 +486,29 @@ def patient_menu(id):
             response.addSpeak(body='You will now be guided through the process of scheduling an appointment')
             absolute_action_url = url_for('new_appointment', _external=True, patient_id=id)
             response.addRedirect(body=absolute_action_url, method='GET')
-        else: 
-            response.addSpeak(PLIVO_JOKE)
+        # else: 
+        #     response.addSpeak(PLIVO_JOKE)
 
-            digit = request.form.get('Digits')
+        #     digit = request.form.get('Digits')
 
-            appointment = Appointment.query.get_or_404(int(digit))
-            if appointment.patient_id != id:
-                response.addSpeak("Invalid appointment I D")
-                absolute_action_url = url_for('patient_menu', _external=True, id=patient.id)
-                response.addRedirect(body=absolute_action_url, method='GET')
-            else:
-                response.addSpeak("Your appointment with I D, " + )
-                if appointment.status == "Completed":
-                    response.addSpeak("was successfully completed with doctor ")
-                    response.addSpeak("was successfully completed with doctor " + digit " is ")
-                elif appointment.status == "Scheduled":
-                    response.addSpeak("Pending " + digit " is ")
+        #     appointment = Appointment.query.get_or_404(int(digit))
+        #     if appointment.patient_id != id:
+        #         response.addSpeak("Invalid appointment I D")
+        #         absolute_action_url = url_for('patient_menu', _external=True, id=patient.id)
+        #         response.addRedirect(body=absolute_action_url, method='GET')
+        #     else:
+        #         response.addSpeak("Your appointment with I D, " + )
+        #         if appointment.status == "Completed":
+        #             response.addSpeak("was successfully completed with doctor ")
+        #             response.addSpeak("was successfully completed with doctor " + digit " is ")
+        #         elif appointment.status == "Scheduled":
+        #             response.addSpeak("Pending " + digit " is ")
 
 
-            patient_response = "Welcome " + patient.name
-            response.addSpeak(patient_response)
-            absolute_action_url = url_for('patient_menu', _external=True, id=patient.id)
-            response.addRedirect(body=absolute_action_url, method='GET')
+        #     patient_response = "Welcome " + patient.name
+        #     response.addSpeak(patient_response)
+        #     absolute_action_url = url_for('patient_menu', _external=True, id=patient.id)
+        #     response.addRedirect(body=absolute_action_url, method='GET')
 
         return Response(str(response), mimetype='text/xml')
 

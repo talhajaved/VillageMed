@@ -9,6 +9,9 @@
 <div class="col-xs-6 appointment-content">
     <h4><div class="appointment-patient">Patient: {{ appointment.patient.name }}</div></h4>
     <h4><div class="appointment-patient">Status: {{ appointment.status }}</div></h4>
+    {% if appointment.status != 'Pending' %}
+    <h4><div class="appointment-patient">Doctor: {{ appointment.doctor.name }}</div></h4>
+    {% endif %}
     <div class="appointment-patient">Age: {{ appointment.patient.age }}</div>
     <div class="appointment-patient">Gender: {{ appointment.patient.gender }}</div>
     <div class="appointment-patient">Phone#: {{ appointment.patient.phone_number }}</div>
