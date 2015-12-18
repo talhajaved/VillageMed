@@ -496,13 +496,13 @@ def patient_menu(id):
                 response.addSpeak("Your appointment with I D, " + digit)
                 if appointment.status == "Completed":
                     response.addSpeak(" was successfully completed with doctor ")
-                    response.addSpeak(appointment.doctor.name + " on " + appointment.appointment_time)
+                    response.addSpeak(appointment.doctor.name + " on " + str(appointment.appointment_time))
                     absolute_action_url = url_for('patient_menu', _external=True, id=id)
                     response.addRedirect(body=absolute_action_url, method='GET')
                 else:
                     if appointment.status == "Scheduled":
                         response.addSpeak(" is scheduled with doctor ")
-                        response.addSpeak(appointment.doctor.name + " for " + appointment.appointment_time)
+                        response.addSpeak(appointment.doctor.name + " for " + str(appointment.appointment_time))
                     else:
                         response.addSpeak(" is pending. You will be contacted soon with further \
                             details once a doctor has been found for you. ")
