@@ -527,7 +527,7 @@ def appointment_menu(id):
 
     elif request.method == 'POST':
         digit = request.form.get('Digits')
-        appointment = Appointment.query.get_or_404(int(digit))
+        appointment = Appointment.query.get_or_404(id)
         if digit == "2":
             absolute_action_url = url_for('patient_menu', _external=True, id=appointment.patient_id)
             response.addRedirect(body=absolute_action_url, method='GET')
