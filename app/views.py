@@ -497,6 +497,7 @@ def patient_menu(id):
                 if appointment.status == "Completed":
                     response.addSpeak(" was successfully completed with doctor ")
                     response.addSpeak(appointment.doctor.name + " on " + str(appointment.appointment_time))
+                    getDigits.addWait(length=1)
                     absolute_action_url = url_for('patient_menu', _external=True, id=id)
                     response.addRedirect(body=absolute_action_url, method='GET')
                 else:
@@ -506,6 +507,7 @@ def patient_menu(id):
                     else:
                         response.addSpeak(" is pending. You will be contacted soon with further \
                             details once a doctor has been found for you. ")
+                    getDigits.addWait(length=1)
                     absolute_action_url = url_for('appointment_menu', _external=True, id=appointment.id)
                     response.addRedirect(body=absolute_action_url, method='GET')
         return Response(str(response), mimetype='text/xml')
@@ -662,7 +664,7 @@ def new_appointment(patient_id):
 def new_call(appointment_id):
     response = plivoxml.Response()
     if request.method == 'GET':
-        getdigits_action_url = url_for('new_appointment', _external=True, appointment_id=appointment_id,
+        getdigits_action_url = url_for('new_call', _external=True, appointment_id=appointment_id,
                                     **{'date': None,'time': None, 'severity': None})
 
         getDigits = plivoxml.GetDigits(action=getdigits_action_url,
@@ -678,7 +680,7 @@ def new_call(appointment_id):
         if not request.args.get('severity', None):
             severity = request.form.get('Digits')
             response = plivoxml.Response()
-            absolute_action_url = url_for('new_call', _external=True, patient_id=patient_id,
+            absolute_action_url = url_for('new_call', _external=True, appointment_id=appointment_id,
                                     **{'severity': severity})
             getDigits = plivoxml.GetDigits(action=absolute_action_url, method='POST',
                                         timeout=120, numDigits=10, retries=1)
