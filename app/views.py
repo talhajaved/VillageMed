@@ -486,29 +486,27 @@ def patient_menu(id):
             response.addSpeak(body='You will now be guided through the process of scheduling an appointment')
             absolute_action_url = url_for('new_appointment', _external=True, patient_id=id)
             response.addRedirect(body=absolute_action_url, method='GET')
-        # else: 
-        #     response.addSpeak(PLIVO_JOKE)
+        else: 
+            digit = request.form.get('Digits')
 
-        #     digit = request.form.get('Digits')
+            appointment = Appointment.query.get_or_404(int(digit))
+            if appointment.patient_id != id:
+                response.addSpeak("Invalid appointment I D")
+                absolute_action_url = url_for('patient_menu', _external=True, id=patient.id)
+                response.addRedirect(body=absolute_action_url, method='GET')
+            else:
+                response.addSpeak("Your appointment with I D, " + digit + )
+                if appointment.status == "Completed":
+                    response.addSpeak(" was successfully completed with doctor ")
+                    response.addSpeak(appointment.doctor.name + " on " + appointment.appointment_time)
+                elif appointment.status == "Scheduled":
+                    response.addSpeak(" is scheduled with doctor ")
+                    response.addSpeak(appointment.doctor.name + " for " + appointment.appointment_time)
 
-        #     appointment = Appointment.query.get_or_404(int(digit))
-        #     if appointment.patient_id != id:
-        #         response.addSpeak("Invalid appointment I D")
-        #         absolute_action_url = url_for('patient_menu', _external=True, id=patient.id)
-        #         response.addRedirect(body=absolute_action_url, method='GET')
-        #     else:
-        #         response.addSpeak("Your appointment with I D, " + )
-        #         if appointment.status == "Completed":
-        #             response.addSpeak("was successfully completed with doctor ")
-        #             response.addSpeak("was successfully completed with doctor " + digit " is ")
-        #         elif appointment.status == "Scheduled":
-        #             response.addSpeak("Pending " + digit " is ")
-
-
-        #     patient_response = "Welcome " + patient.name
-        #     response.addSpeak(patient_response)
-        #     absolute_action_url = url_for('patient_menu', _external=True, id=patient.id)
-        #     response.addRedirect(body=absolute_action_url, method='GET')
+            # patient_response = "Welcome " + patient.name
+            # response.addSpeak(patient_response)
+            absolute_action_url = url_for('patient_menu', _external=True, id=patient.id)
+            response.addRedirect(body=absolute_action_url, method='GET')
 
         return Response(str(response), mimetype='text/xml')
 
