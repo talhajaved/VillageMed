@@ -11,32 +11,33 @@
     {% endif %}
   </head>
   <body>
-  {% block navbar %}
-<div class="navbar navbar-default" style='background-color:#cddce5; border-bottom: 3px solid grey;' role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="{{ url_for('index') }}"><img src="../static/VMedLogo.png" height ="35"></img></a>
-        </div>
-        <div class="navbar-collapse collapse" style="font-size:1.7em; padding-top: 8px; font-weight: bold; font-family: 'Open Sans', sans-serif;">
-            <ul class="nav navbar-nav navbar-left">
-                <li><a href="{{ url_for('index') }}">Home</a></li>
-                {% if g.user.is_authenticated() %}
-                <li><a href="{{ url_for('user') }}">Profile</a></li>
-                {% endif %}
-                <li><a href="{{ url_for('donate') }}">Donate</a></li>
-                <li><a href="{{ url_for('about') }}">About</a></li>
 
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                {% if g.user.is_authenticated() %}
-                <li style="float:right;"><a href="{{ url_for('logout') }}">Logout</a></li>
-                {% else %}
-                <li style="float:right;"><a href="{{ url_for('login') }}">Login</a></li>
-                {% endif %}
-            </ul>
+{% block navbar %}
+    <div class="navbar navbar-default" style='background-color:#cddce5; margin: 0px; border-bottom: 3px solid grey;' role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{{ url_for('index') }}"><img src="../static/VMedLogo.png" height ="35"></img></a>
+            </div>
+            <div style="font-size:1.7em; padding-top: 8px; font-weight: bold; font-family: 'Open Sans', sans-serif;">
+                <ul class="nav navbar-nav navbar-left">
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    {% if g.user.is_authenticated() %}
+                    <li><a href="{{ url_for('user') }}">Profile</a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('donate') }}">Donate</a></li>
+                    <li><a href="{{ url_for('about') }}">About</a></li>
+
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    {% if g.user.is_authenticated() %}
+                    <li style="float:right;"><a href="{{ url_for('logout') }}">Logout</a></li>
+                    {% else %}
+                    <li style="float:right;"><a href="{{ url_for('oauth_authorize', provider='twitter') }}">Login</a>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}
 
 

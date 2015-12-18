@@ -1,72 +1,77 @@
-<html>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-<style>
 
-body {
-	background-image:url("../static/SplashImage.jpg");
-	background-size: 1500px 1100px;
-    background-repeat: no-repeat;
-	width:"100%"
-}
+{% extends "base.html" %}
 
-.main-con {
-  width: 400px;
-  font-size: 2.5em;
-  font-family: Trebuchet MS;
-  height: auto;
-  margin: 0 auto;
-  margin-top: 100px;
-  text-align: center;
-  padding: 25px;
-  background-color: rgba(244, 244, 244, 0.7);
-  ;
-  border-radius: 20px;
-  color: #000;
-  box-shadow: -10px 10px 20px rgba(100, 100, 100, .8);
-  ;
-}
+{% block title %}VillageMED - Log In{% endblock %}
 
-</style>
+{% block head %}
+  <style>
+    .navbar {
+      padding-bottom: 8px;
+    }
+  </style>
+{% endblock %}
 
-<body>
-<div class="navbar navbar-inverse" style='background-color:#FFFFFF' role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="{{ url_for('index') }}"><img src="../static/VMedLogo.svg" width="200" height ="35"></img></a>
-        </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="{{ url_for('index') }}">About</a></li>
-                <li><a href="{{ url_for('donate') }}">Donate</a></li>
+{% block content %}
 
-            </ul>
-        </div>
-    </div>
-</div>
-<div class='container main-con'>
-<form id="checkout" method="post" action="/checkout">
-  <div id="payment-form"></div>
-  <input type="submit" value="Pay $10">
-</form>
-<!-- 
-<form id="checkout" action="/your/server/endpoint" method="post">
-  <input data-braintree-name="number" value="4111111111111111">
-  <input data-braintree-name="expiration_date" value="10/20">
-  <input type="submit" id="submit" value="Pay">
-</form> -->
+  <style>
+    .body-con {
+    background: url("../static/SplashImage.jpg") no-repeat center center fixed;
+    background-size: cover;
+      background-repeat: no-repeat;
+    padding-top: 40px;
+    padding-bottom: 20px;
+    }
 
-</div>
-</body>
+    .btn {
+    margin: 10px 20px;
+    width: 150px
+    }
 
-<script src="https://js.braintreegateway.com/v2/braintree.js"></script>
-<script>
-// We generated a client token for you so you can test out this code
-// immediately. In a production-ready integration, you will need to
-// generate a client token on your server (see section below).
-var clientToken = "eyJ2ZXJzaW9uIjoyLCJhdXRob3JpemF0aW9uRmluZ2VycHJpbnQiOiIwOTA2MzQ2ZTMxNTcwZjdjMzNjZTYwYjgxNjkyNWNkN2E2YThhZDNmODgwNGQ2Y2Q4NTU4N2U0ZmExYjYyNDg0fGNyZWF0ZWRfYXQ9MjAxNS0wOC0wOVQxNTowNToyMi4zNzA2Mzg4NDUrMDAwMFx1MDAyNm1lcmNoYW50X2lkPWRjcHNweTJicndkanIzcW5cdTAwMjZwdWJsaWNfa2V5PTl3d3J6cWszdnIzdDRuYzgiLCJjb25maWdVcmwiOiJodHRwczovL2FwaS5zYW5kYm94LmJyYWludHJlZWdhdGV3YXkuY29tOjQ0My9tZXJjaGFudHMvZGNwc3B5MmJyd2RqcjNxbi9jbGllbnRfYXBpL3YxL2NvbmZpZ3VyYXRpb24iLCJjaGFsbGVuZ2VzIjpbXSwiZW52aXJvbm1lbnQiOiJzYW5kYm94IiwiY2xpZW50QXBpVXJsIjoiaHR0cHM6Ly9hcGkuc2FuZGJveC5icmFpbnRyZWVnYXRld2F5LmNvbTo0NDMvbWVyY2hhbnRzL2RjcHNweTJicndkanIzcW4vY2xpZW50X2FwaSIsImFzc2V0c1VybCI6Imh0dHBzOi8vYXNzZXRzLmJyYWludHJlZWdhdGV3YXkuY29tIiwiYXV0aFVybCI6Imh0dHBzOi8vYXV0aC52ZW5tby5zYW5kYm94LmJyYWludHJlZWdhdGV3YXkuY29tIiwiYW5hbHl0aWNzIjp7InVybCI6Imh0dHBzOi8vY2xpZW50LWFuYWx5dGljcy5zYW5kYm94LmJyYWludHJlZWdhdGV3YXkuY29tIn0sInRocmVlRFNlY3VyZUVuYWJsZWQiOnRydWUsInRocmVlRFNlY3VyZSI6eyJsb29rdXBVcmwiOiJodHRwczovL2FwaS5zYW5kYm94LmJyYWludHJlZWdhdGV3YXkuY29tOjQ0My9tZXJjaGFudHMvZGNwc3B5MmJyd2RqcjNxbi90aHJlZV9kX3NlY3VyZS9sb29rdXAifSwicGF5cGFsRW5hYmxlZCI6dHJ1ZSwicGF5cGFsIjp7ImRpc3BsYXlOYW1lIjoiQWNtZSBXaWRnZXRzLCBMdGQuIChTYW5kYm94KSIsImNsaWVudElkIjpudWxsLCJwcml2YWN5VXJsIjoiaHR0cDovL2V4YW1wbGUuY29tL3BwIiwidXNlckFncmVlbWVudFVybCI6Imh0dHA6Ly9leGFtcGxlLmNvbS90b3MiLCJiYXNlVXJsIjoiaHR0cHM6Ly9hc3NldHMuYnJhaW50cmVlZ2F0ZXdheS5jb20iLCJhc3NldHNVcmwiOiJodHRwczovL2NoZWNrb3V0LnBheXBhbC5jb20iLCJkaXJlY3RCYXNlVXJsIjpudWxsLCJhbGxvd0h0dHAiOnRydWUsImVudmlyb25tZW50Tm9OZXR3b3JrIjp0cnVlLCJlbnZpcm9ubWVudCI6Im9mZmxpbmUiLCJ1bnZldHRlZE1lcmNoYW50IjpmYWxzZSwiYnJhaW50cmVlQ2xpZW50SWQiOiJtYXN0ZXJjbGllbnQzIiwibWVyY2hhbnRBY2NvdW50SWQiOiJzdGNoMm5mZGZ3c3p5dHc1IiwiY3VycmVuY3lJc29Db2RlIjoiVVNEIn0sImNvaW5iYXNlRW5hYmxlZCI6dHJ1ZSwiY29pbmJhc2UiOnsiY2xpZW50SWQiOiIxMWQyNzIyOWJhNThiNTZkN2UzYzAxYTA1MjdmNGQ1YjQ0NmQ0ZjY4NDgxN2NiNjIzZDI1NWI1NzNhZGRjNTliIiwibWVyY2hhbnRBY2NvdW50IjoiY29pbmJhc2UtZGV2ZWxvcG1lbnQtbWVyY2hhbnRAZ2V0YnJhaW50cmVlLmNvbSIsInNjb3BlcyI6ImF1dGhvcml6YXRpb25zOmJyYWludHJlZSB1c2VyIiwicmVkaXJlY3RVcmwiOiJodHRwczovL2Fzc2V0cy5icmFpbnRyZWVnYXRld2F5LmNvbS9jb2luYmFzZS9vYXV0aC9yZWRpcmVjdC1sYW5kaW5nLmh0bWwiLCJlbnZpcm9ubWVudCI6Im1vY2sifSwibWVyY2hhbnRJZCI6ImRjcHNweTJicndkanIzcW4iLCJ2ZW5tbyI6Im9mZmxpbmUiLCJhcHBsZVBheSI6eyJzdGF0dXMiOiJtb2NrIiwiY291bnRyeUNvZGUiOiJVUyIsImN1cnJlbmN5Q29kZSI6IlVTRCIsIm1lcmNoYW50SWRlbnRpZmllciI6Im1lcmNoYW50LmNvbS5icmFpbnRyZWVwYXltZW50cy5zYW5kYm94LkJyYWludHJlZS1EZW1vIiwic3VwcG9ydGVkTmV0d29ya3MiOlsidmlzYSIsIm1hc3RlcmNhcmQiLCJhbWV4Il19fQ==";
+    .navbar-collapse {
+      padding-top: 8px;
+    }
 
-braintree.setup(clientToken, "dropin", {
-  container: "payment-form"
-});
-</script>
-</html>
+    .main-con {
+      width: 400px;
+      font-size: 2.5em;
+      font-family: Trebuchet MS;
+      height: auto;
+      margin: 2% auto;
+      margin-top: 65px;
+      background-color: #efefef;
+      text-align: center;
+      padding-top: 35px;
+      background-color: rgba(224, 224, 224, 0.7);
+      border-radius: 20px;
+      color: #000;
+      box-shadow: -10px 10px 20px rgba(100, 100, 100, .8);
+      }
+
+    h1 {position: absolute;
+      top: 200px;
+      left: 30%;
+      }
+
+  </style>
+
+
+  <div class='container main-con'> 
+
+    <p style='padding-bottom: 20px'> Your donations help in funding the expenses of our patients.</p>
+    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+    <input type="hidden" name="cmd" value="_donations">
+    <input type="hidden" name="business" value="villagemed@villagemed.com">
+    <input type="hidden" name="lc" value="US">
+    <input type="hidden" name="item_name" value="VillageMED">
+    <input type="hidden" name="no_note" value="0">
+    <input type="hidden" name="currency_code" value="USD">
+    <input type="hidden" name="bn" value="PP-DonationsBF:btn_donateCC_LG.gif:NonHostedGuest">
+    <input type="image" width="300px" src="../static/PayPalDonate.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+    <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+    </form>
+  </div>
+
+
+
+{% endblock %}

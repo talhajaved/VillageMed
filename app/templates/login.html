@@ -1,118 +1,117 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
-<style>
-body {
-	background-image:url("../static/SplashImage.jpg");
-	background-size: 1500px 1100px;
-    background-repeat: no-repeat;
-	width:"100%"
-}
+{% extends "base.html" %}
 
-.btn {
-	margin: 10px 20px;
-	width: 150px
-}
+{% block title %}VillageMED - Log In{% endblock %}
 
-.main-con {
-  width: 700px;
-  font-size: 2.5em;
-  font-family: Trebuchet MS;
-  height: auto;
-  margin: 2% auto;
-  margin-top: 0;
-  background-color: #efefef;
-  text-align: center;
-  padding: 15px;
-  background-color: rgba(224, 224, 224, 0.7);
-  ;
-  border-radius: 20px;
-  color: #000;
-  box-shadow: -10px 10px 20px rgba(100, 100, 100, .8);
-  ;
-}
-
-<style>
-
-<html>
-<head>
-	<title>VillageMED
-	</title>
+{% block head %}
 	<style>
+		.navbar {
+			padding-bottom: 8px;
+		}
+	</style>
+{% endblock %}
+
+{% block content %}
+
+	<style>
+		.body-con {
+		background: url("../static/SplashImage.jpg") no-repeat center center fixed;
+		background-size: cover;
+	    background-repeat: no-repeat;
+		padding-top: 40px;
+		padding-bottom: 20px;
+		}
+
+		.btn {
+		margin: 10px 20px;
+		width: 150px
+		}
+
+		.navbar-collapse {
+			padding-top: 8px;
+		}
+
+		.main-con {
+			width: 700px;
+			font-size: 2.5em;
+			font-family: Trebuchet MS;
+			height: auto;
+			margin: 2% auto;
+			margin-top: 0;
+			background-color: #efefef;
+			text-align: center;
+			padding: 15px;
+			background-color: rgba(224, 224, 224, 0.7);
+			border-radius: 20px;
+			color: #000;
+			box-shadow: -10px 10px 20px rgba(100, 100, 100, .8);
+			}
+
 		h1 {position: absolute;
 			top: 200px;
 			left: 30%;
-		}
+			}
+
 		button { position: absolute;
 				top:300px;		
 			}
+
 	</style>
-</head>
-<body>
-<div class="navbar navbar-inverse" style='background-color:#FFFFFF' role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="{{ url_for('index') }}"><img src="../static/VMedLogo.svg" width="200" height ="35"></img></a>
-        </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="{{ url_for('about') }}">About</a></li>
-                <li><a href="{{ url_for('donate') }}">Donate</a></li>
-            </ul>
-        </div>
-    </div>
-</div>
 
 
-<div class='container main-con'> 
-<center><h2>Remote Medical Care for the World's Neediest</h2></center>
-<center>
-<!-- <button type="button" class='btn' width="200">Donate</button><br> -->
-<a class='btn btn-primary btn-lg' href="{{ url_for('donate') }}">Donate</a>
-<a class='btn btn-primary btn-lg' href="{{ url_for('oauth_authorize', provider='twitter') }}">Volunteer</a>
-</center>
+	<div class='container-fluid body-con'> 
+		<div class='container main-con'> 
+		<center><h2>Remote Medical Care for the World's Neediest</h2></center>
+		<center>
+		<!-- <button type="button" class='btn' width="200">Donate</button><br> -->
+		<a class='btn btn-primary btn-lg' href="{{ url_for('donate') }}">Donate</a>
+		<a class='btn btn-primary btn-lg' href="{{ url_for('oauth_authorize', provider='twitter') }}">Volunteer</a>
+		</center>
 
-<center><h2>What we do</h2></center>
-<center>
-<table width="100%">
-	<tr>
-		<td>
-			<center><p> Developing nations have over 3 billion residents in rural areas with extremely limited access to medical care. While cell phone access is widespread, most other technologies such as internet and smart phones are scarce.  VillageMED brokers remote medical consultations between volunteer doctors and underserved communities in rural developing areas.  The technology used is primarily an adaptive IVR system for clients and a web application for donors and volunteer doctors.
-			</p></center>
-			</td>
+		<center><h2>What we do</h2></center>
+		<center>
+		<table width="100%">
+			<tr>
+				<td>
+					<center><p> Developing nations have over 3 billion residents in rural areas with extremely limited access to medical care. While cell phone access is widespread, most other technologies such as internet and smart phones are scarce.  VillageMED brokers remote medical consultations between volunteer doctors and underserved communities in rural developing areas.  The technology used is primarily an adaptive IVR system for clients and a web application for donors and volunteer doctors.
+					</p></center>
+					</td>
+					</tr>
+					</table></center>
+
+
+		<center><h2>How it works</h2></center>
+		<center>
+		<table width="100%">
+			<tr>
+				<td>
+					<center><p>When in need of a medical consultation clients call <b>+1 (662) 245-3870</b></p></center>
+				</td>
 			</tr>
-			</table></center>
+			<tr>
+				<td>
+		<br>
+			<center><p>The voice-only menu system records key details for identifying the appropriate medical specialists for assistance including urgency, symptoms, and availability for an appointment.</p></center>
+				</td>
+			</tr>
+			<tr>
+				<td>
+		<br>
+			<p><center>Volunteer doctors are alerted of patient appointment requests that match their availability and specialty</center></p>
+				</td>
+			</tr>
+			<tr>
+				<td>
+		<br>
+			<p><center>When a doctor has accepted an appointment request, the client is notified by text message and/or voice message</p></center>
+				</td>
+			</tr>
+		</table>
+		</center>
+		</div>
+	</div>
 
 
-<center><h2>How it works</h2></center>
-<center>
-<table width="100%">
-	<tr>
-		<td>
-			<center><p>When in need of a medical consultation clients call <b>(520) 369-4650</b></p></center>
-		</td>
-	</tr>
-	<tr>
-		<td>
-<br>
-	<center><p>The voice-only menu system records key details for identifying the appropriate medical specialists for assistance including urgency, symptoms, and availability for an appointment.</p></center>
-		</td>
-	</tr>
-	<tr>
-		<td>
-<br>
-	<p><center>Volunteer doctors are alerted of patient appointment requests that match their availability and specialty</center></p>
-		</td>
-	</tr>
-	<tr>
-		<td>
-<br>
-	<p><center>When a doctor has accepted an appointment request, the client is notified by text message and/or voice message</p></center>
-		</td>
-	</tr>
-</table>
-</center>
-</div>
-</body>
 
-
-</html>
+{% endblock %}
