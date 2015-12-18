@@ -495,7 +495,7 @@ def patient_menu(id):
                 absolute_action_url = url_for('patient_menu', _external=True, id=patient.id)
                 response.addRedirect(body=absolute_action_url, method='GET')
             else:
-                response.addSpeak("Your appointment with I D, " + digit + )
+                response.addSpeak("Your appointment with I D, " + digit)
                 if appointment.status == "Completed":
                     response.addSpeak(" was successfully completed with doctor ")
                     response.addSpeak(appointment.doctor.name + " on " + appointment.appointment_time)
